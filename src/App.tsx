@@ -15,6 +15,10 @@ import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AppForm from "./pages/admin/AppForm";
 import NotFound from "./pages/NotFound";
+import ContactUs from "./pages/ContactUs";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsConditions from "./pages/TermsConditions";
+import Feedback from "./pages/Feedback";
 
 const queryClient = new QueryClient();
 
