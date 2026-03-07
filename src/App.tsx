@@ -52,6 +52,10 @@ const App = () => (
               path="/admin/apps/:id/edit"
               element={<ProtectedRoute adminOnly><AppForm /></ProtectedRoute>}
             />
+            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsConditions />} />
+            <Route path="/feedback" element={<Feedback />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
