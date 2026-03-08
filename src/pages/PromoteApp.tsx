@@ -13,6 +13,9 @@ import { useToast } from "@/hooks/use-toast";
 import { ExternalLink, CreditCard, CheckCircle2, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { z } from "zod";
+import { Upload, Video } from "lucide-react";
+
+const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
 
 const BUTTON_STYLES = [
   { id: "gradient", label: "Gradient Neon", preview: "gradient-neon text-primary-foreground neon-glow" },
@@ -40,6 +43,8 @@ const PromoteApp: React.FC = () => {
   const [description, setDescription] = useState("");
   const [transactionId, setTransactionId] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoUploading, setVideoUploading] = useState(false);
 
   const { data: price = "100" } = useQuery({
     queryKey: ["promotion-price"],
@@ -85,6 +90,27 @@ const PromoteApp: React.FC = () => {
     }
 
     setSubmitting(true);
+
+    // Upload video if exists
+    let videoUrl: string | null = null;
+    if (videoFile) {
+      setVideoUploading(true);
+      const fileExt = videoFile.name.split(".").pop();
+      const filePath = `${user.id}/${Date.now()}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage
+        .from("promotion-videos")
+        .upload(filePath, videoFile);
+      if (uploadError) {
+        toast({ title: "Video upload failed", description: uploadError.message, variant: "destructive" });
+        setSubmitting(false);
+        setVideoUploading(false);
+        return;
+      }
+      const { data: urlData } = supabase.storage.from("promotion-videos").getPublicUrl(filePath);
+      videoUrl = urlData.publicUrl;
+      setVideoUploading(false);
+    }
+
     const { error } = await supabase.from("promotion_requests").insert({
       user_id: user.id,
       app_link: appLink,
@@ -93,7 +119,8 @@ const PromoteApp: React.FC = () => {
       description,
       transaction_id: transactionId,
       amount: Number(price),
-    });
+      video_url: videoUrl,
+    } as any);
 
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -193,6 +220,43 @@ const PromoteApp: React.FC = () => {
                     className="mt-1"
                     rows={3}
                   />
+                </div>
+
+                {/* Video Upload */}
+                <div>
+                  <Label className="flex items-center gap-2">
+                    <Video className="h-4 w-4 text-neon-pink" /> Promotion Video (Optional)
+                  </Label>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Video ad upload karein — download ke waqt users ko dikhaya jayega (max 50MB)
+                  </p>
+                  <label className="flex items-center justify-center gap-2 p-6 border-2 border-dashed border-border/50 rounded-xl cursor-pointer hover:border-neon-pink/50 transition-colors mt-1">
+                    <Upload className="h-5 w-5 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">
+                      {videoFile ? videoFile.name : "Click to upload video"}
+                    </span>
+                    <input
+                      type="file"
+                      accept="video/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          if (file.size > MAX_VIDEO_SIZE) {
+                            toast({ title: "Error", description: "Video 50MB se chhota hona chahiye", variant: "destructive" });
+                            return;
+                          }
+                          setVideoFile(file);
+                        }
+                      }}
+                    />
+                  </label>
+                  {videoFile && (
+                    <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+                      <span>{(videoFile.size / (1024 * 1024)).toFixed(1)} MB</span>
+                      <button onClick={() => setVideoFile(null)} className="text-destructive hover:underline">Remove</button>
+                    </div>
+                  )}
                 </div>
 
                 <Button
