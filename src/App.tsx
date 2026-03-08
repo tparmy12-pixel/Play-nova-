@@ -19,6 +19,8 @@ import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import Feedback from "./pages/Feedback";
+import PromoteApp from "./pages/PromoteApp";
+import PromotionRequests from "./pages/admin/PromotionRequests";
 
 const queryClient = new QueryClient();
 
