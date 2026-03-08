@@ -13,6 +13,9 @@ import { useToast } from "@/hooks/use-toast";
 import { ExternalLink, CreditCard, CheckCircle2, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { z } from "zod";
+import { Upload, Video } from "lucide-react";
+
+const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
 
 const BUTTON_STYLES = [
   { id: "gradient", label: "Gradient Neon", preview: "gradient-neon text-primary-foreground neon-glow" },
