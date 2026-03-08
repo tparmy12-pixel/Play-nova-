@@ -181,14 +181,27 @@ const AppDetail: React.FC = () => {
                 {new Date(app.updated_at).toLocaleDateString()}
               </span>
             </div>
-            <Button
-              onClick={handleDownload}
-              className="mt-6 gradient-neon text-primary-foreground neon-glow px-8"
-              size="lg"
-            >
-              <Download className="h-5 w-5 mr-2" />
-              Download APK
-            </Button>
+            <div className="mt-6 space-y-2">
+              <Button
+                onClick={handleDownload}
+                className="gradient-neon text-primary-foreground neon-glow px-8"
+                size="lg"
+                disabled={downloading}
+              >
+                <Download className="h-5 w-5 mr-2" />
+                {downloading ? `Downloading... ${Math.min(Math.round(downloadProgress), 100)}%` : "Download APK"}
+              </Button>
+              {downloading && (
+                <div className="w-64 h-2 bg-muted rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full gradient-neon rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.min(downloadProgress, 100)}%` }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </motion.div>
 
