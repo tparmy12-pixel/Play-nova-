@@ -90,6 +90,27 @@ const PromoteApp: React.FC = () => {
     }
 
     setSubmitting(true);
+
+    // Upload video if exists
+    let videoUrl: string | null = null;
+    if (videoFile) {
+      setVideoUploading(true);
+      const fileExt = videoFile.name.split(".").pop();
+      const filePath = `${user.id}/${Date.now()}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage
+        .from("promotion-videos")
+        .upload(filePath, videoFile);
+      if (uploadError) {
+        toast({ title: "Video upload failed", description: uploadError.message, variant: "destructive" });
+        setSubmitting(false);
+        setVideoUploading(false);
+        return;
+      }
+      const { data: urlData } = supabase.storage.from("promotion-videos").getPublicUrl(filePath);
+      videoUrl = urlData.publicUrl;
+      setVideoUploading(false);
+    }
+
     const { error } = await supabase.from("promotion_requests").insert({
       user_id: user.id,
       app_link: appLink,
@@ -98,7 +119,8 @@ const PromoteApp: React.FC = () => {
       description,
       transaction_id: transactionId,
       amount: Number(price),
-    });
+      video_url: videoUrl,
+    } as any);
 
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
