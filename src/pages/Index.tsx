@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/Layout";
 import AppCard from "@/components/AppCard";
 import { motion } from "framer-motion";
+import { Sparkles } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const CATEGORIES = ["All", "Social", "Games", "Tools", "Entertainment", "Education", "Other"];
