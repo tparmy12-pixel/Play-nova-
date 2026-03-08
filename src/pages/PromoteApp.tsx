@@ -14,6 +14,7 @@ import { ExternalLink, CreditCard, CheckCircle2, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { z } from "zod";
 import { Upload, Video } from "lucide-react";
+import AIAdGenerator from "@/components/AIAdGenerator";
 
 const MAX_VIDEO_SIZE = 200 * 1024 * 1024; // 200MB
 
@@ -257,6 +258,19 @@ const PromoteApp: React.FC = () => {
                       <button onClick={() => setVideoFile(null)} className="text-destructive hover:underline">Remove</button>
                     </div>
                   )}
+                </div>
+
+                {/* AI Ad Generator */}
+                <div className="pt-2 border-t border-border/30">
+                  <p className="text-xs text-muted-foreground mb-3">
+                    — ya phir AI se ad video generate karein —
+                  </p>
+                  <AIAdGenerator
+                    onVideoGenerated={(file) => {
+                      setVideoFile(file);
+                      toast({ title: "AI Video Added! 🎬", description: "Generated video auto-attached ho gaya" });
+                    }}
+                  />
                 </div>
 
                 <Button
