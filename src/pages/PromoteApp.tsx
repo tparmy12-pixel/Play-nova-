@@ -15,7 +15,7 @@ import { motion } from "framer-motion";
 import { z } from "zod";
 import { Upload, Video } from "lucide-react";
 
-const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
+const MAX_VIDEO_SIZE = 200 * 1024 * 1024; // 200MB
 
 const BUTTON_STYLES = [
   { id: "gradient", label: "Gradient Neon", preview: "gradient-neon text-primary-foreground neon-glow" },
@@ -228,7 +228,7 @@ const PromoteApp: React.FC = () => {
                     <Video className="h-4 w-4 text-neon-pink" /> Promotion Video (Optional)
                   </Label>
                   <p className="text-xs text-muted-foreground mb-2">
-                    Video ad upload karein — download ke waqt users ko dikhaya jayega (max 50MB)
+                    Video ad upload karein — download ke waqt users ko dikhaya jayega (max 200MB)
                   </p>
                   <label className="flex items-center justify-center gap-2 p-6 border-2 border-dashed border-border/50 rounded-xl cursor-pointer hover:border-neon-pink/50 transition-colors mt-1">
                     <Upload className="h-5 w-5 text-muted-foreground" />
@@ -243,7 +243,7 @@ const PromoteApp: React.FC = () => {
                         const file = e.target.files?.[0];
                         if (file) {
                           if (file.size > MAX_VIDEO_SIZE) {
-                            toast({ title: "Error", description: "Video 50MB se chhota hona chahiye", variant: "destructive" });
+                            toast({ title: "Error", description: "Video 200MB se chhota hona chahiye", variant: "destructive" });
                             return;
                           }
                           setVideoFile(file);
