@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, Users, Package, Plus, BarChart3 } from "lucide-react";
+import { Download, Users, Package, Plus, BarChart3, Sparkles } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 const AdminDashboard: React.FC = () => {
@@ -46,11 +46,18 @@ const AdminDashboard: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-display text-3xl font-black gradient-neon-text">Admin Dashboard</h1>
-          <Link to="/admin/apps/new">
-            <Button className="gradient-neon text-primary-foreground neon-glow">
-              <Plus className="h-4 w-4 mr-2" /> Upload App
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            <Link to="/admin/promotions">
+              <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10">
+                <Sparkles className="h-4 w-4 mr-2" /> Promotions
+              </Button>
+            </Link>
+            <Link to="/admin/apps/new">
+              <Button className="gradient-neon text-primary-foreground neon-glow">
+                <Plus className="h-4 w-4 mr-2" /> Upload App
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Stats */}

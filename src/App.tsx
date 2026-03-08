@@ -19,6 +19,8 @@ import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import Feedback from "./pages/Feedback";
+import PromoteApp from "./pages/PromoteApp";
+import PromotionRequests from "./pages/admin/PromotionRequests";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +58,11 @@ const App = () => (
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsConditions />} />
             <Route path="/feedback" element={<Feedback />} />
+            <Route path="/promote" element={<PromoteApp />} />
+            <Route
+              path="/admin/promotions"
+              element={<ProtectedRoute adminOnly><PromotionRequests /></ProtectedRoute>}
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
