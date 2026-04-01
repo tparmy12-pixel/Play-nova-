@@ -35,6 +35,50 @@ export type Database = {
         }
         Relationships: []
       }
+      app_reviews: {
+        Row: {
+          app_id: string
+          created_at: string
+          flagged_permissions: string[] | null
+          id: string
+          notes: string | null
+          reviewed_by: string | null
+          scan_result: string | null
+          suspicious_keywords: string[] | null
+          trust_score: number | null
+        }
+        Insert: {
+          app_id: string
+          created_at?: string
+          flagged_permissions?: string[] | null
+          id?: string
+          notes?: string | null
+          reviewed_by?: string | null
+          scan_result?: string | null
+          suspicious_keywords?: string[] | null
+          trust_score?: number | null
+        }
+        Update: {
+          app_id?: string
+          created_at?: string
+          flagged_permissions?: string[] | null
+          id?: string
+          notes?: string | null
+          reviewed_by?: string | null
+          scan_result?: string | null
+          suspicious_keywords?: string[] | null
+          trust_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "app_reviews_app_id_fkey"
+            columns: ["app_id"]
+            isOneToOne: false
+            referencedRelation: "apps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       apps: {
         Row: {
           apk_url: string | null
@@ -48,7 +92,10 @@ export type Database = {
           rating: number | null
           screenshots: string[] | null
           size: string | null
+          status: string
+          trust_score: number | null
           updated_at: string
+          uploaded_by: string | null
           version: string
         }
         Insert: {
@@ -63,7 +110,10 @@ export type Database = {
           rating?: number | null
           screenshots?: string[] | null
           size?: string | null
+          status?: string
+          trust_score?: number | null
           updated_at?: string
+          uploaded_by?: string | null
           version?: string
         }
         Update: {
@@ -78,7 +128,10 @@ export type Database = {
           rating?: number | null
           screenshots?: string[] | null
           size?: string | null
+          status?: string
+          trust_score?: number | null
           updated_at?: string
+          uploaded_by?: string | null
           version?: string
         }
         Relationships: []
@@ -183,6 +236,41 @@ export type Database = {
           video_url?: string | null
         }
         Relationships: []
+      }
+      user_installs: {
+        Row: {
+          app_id: string
+          id: string
+          installed_at: string
+          installed_version: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          app_id: string
+          id?: string
+          installed_at?: string
+          installed_version?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          app_id?: string
+          id?: string
+          installed_at?: string
+          installed_version?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_installs_app_id_fkey"
+            columns: ["app_id"]
+            isOneToOne: false
+            referencedRelation: "apps"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
