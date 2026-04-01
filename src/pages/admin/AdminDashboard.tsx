@@ -46,7 +46,17 @@ const AdminDashboard: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-display text-3xl font-black gradient-neon-text">Admin Dashboard</h1>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <Link to="/admin/reviews">
+              <Button variant="outline" className="border-yellow-500 text-yellow-500 hover:bg-yellow-500/10">
+                <ClipboardCheck className="h-4 w-4 mr-2" /> Review Queue
+              </Button>
+            </Link>
+            <Link to="/admin/api-settings">
+              <Button variant="outline" className="border-green-500 text-green-500 hover:bg-green-500/10">
+                <Key className="h-4 w-4 mr-2" /> API Settings
+              </Button>
+            </Link>
             <Link to="/admin/promotions">
               <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10">
                 <Sparkles className="h-4 w-4 mr-2" /> Promotions
