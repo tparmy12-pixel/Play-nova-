@@ -6,7 +6,9 @@ import Layout from "@/components/Layout";
 import AppCard from "@/components/AppCard";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
-import logo from "@/assets/logo.png";
+import { useAuth } from "@/contexts/AuthContext";
+import { Upload } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const CATEGORIES = ["All", "Social", "Games", "Tools", "Entertainment", "Education", "Other"];
 
@@ -14,6 +16,7 @@ const Index: React.FC = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const { data: apps = [], isLoading } = useQuery({
     queryKey: ["apps"],
@@ -53,13 +56,22 @@ const Index: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <img src={logo} alt="Tom Tok Store" className="w-24 h-24 rounded-2xl mx-auto mb-6 neon-glow object-cover" />
             <h1 className="font-display text-4xl md:text-5xl font-black gradient-neon-text mb-4">
-              Tom Tok Store
+              bs Store
             </h1>
             <p className="text-muted-foreground text-lg max-w-md mx-auto">
               Discover amazing apps and games. Download with confidence.
             </p>
+            {user && (
+              <Button
+                onClick={() => navigate("/upload")}
+                className="mt-6 gradient-neon text-primary-foreground neon-glow"
+                size="lg"
+              >
+                <Upload className="h-5 w-5 mr-2" />
+                Upload Your App
+              </Button>
+            )}
           </motion.div>
         </div>
       </section>
