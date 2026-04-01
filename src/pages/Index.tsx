@@ -56,13 +56,22 @@ const Index: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <img src={logo} alt="Tom Tok Store" className="w-24 h-24 rounded-2xl mx-auto mb-6 neon-glow object-cover" />
             <h1 className="font-display text-4xl md:text-5xl font-black gradient-neon-text mb-4">
-              Tom Tok Store
+              bs Store
             </h1>
             <p className="text-muted-foreground text-lg max-w-md mx-auto">
               Discover amazing apps and games. Download with confidence.
             </p>
+            {user && (
+              <Button
+                onClick={() => navigate("/upload")}
+                className="mt-6 gradient-neon text-primary-foreground neon-glow"
+                size="lg"
+              >
+                <Upload className="h-5 w-5 mr-2" />
+                Upload Your App
+              </Button>
+            )}
           </motion.div>
         </div>
       </section>

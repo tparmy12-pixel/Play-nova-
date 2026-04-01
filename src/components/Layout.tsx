@@ -81,7 +81,7 @@ const Layout: React.FC<LayoutProps> = ({ children, onSearch, showSearch = false 
       <footer className="border-t border-border/50 py-8">
         <div className="container mx-auto px-4 text-center space-y-4">
           <p className="font-display text-sm gradient-neon-text font-bold tracking-wider">
-            1 Billion+ Downloads
+            bs Store
           </p>
           <div className="flex flex-wrap justify-center gap-4 text-sm">
             <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors">Contact Us</Link>
@@ -90,7 +90,7 @@ const Layout: React.FC<LayoutProps> = ({ children, onSearch, showSearch = false 
             <Link to="/feedback" className="text-muted-foreground hover:text-primary transition-colors">Feedback</Link>
           </div>
           <p className="text-muted-foreground text-xs">
-            © 2026 Tom Tok Store. All rights reserved.
+            © 2026 bs Store. All rights reserved.
           </p>
         </div>
       </footer>
