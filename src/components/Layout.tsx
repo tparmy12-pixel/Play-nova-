@@ -39,9 +39,15 @@ const Layout: React.FC<LayoutProps> = ({ children, onSearch, showSearch = false 
             </div>
           )}
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             {user ? (
               <>
+                <Button variant="ghost" size="sm" onClick={() => navigate("/upload")} className="text-neon-blue hover:text-neon-blue">
+                  <Upload className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => navigate("/my-apps")}>
+                  <AppWindow className="h-4 w-4" />
+                </Button>
                 {isAdmin && (
                   <Button
                     variant="ghost"
@@ -49,13 +55,11 @@ const Layout: React.FC<LayoutProps> = ({ children, onSearch, showSearch = false 
                     onClick={() => navigate("/admin")}
                     className="text-neon-pink hover:text-neon-pink"
                   >
-                    <Shield className="h-4 w-4 mr-1" />
-                    <span className="hidden sm:inline">Admin</span>
+                    <Shield className="h-4 w-4" />
                   </Button>
                 )}
                 <Button variant="ghost" size="sm" onClick={() => navigate("/profile")}>
-                  <User className="h-4 w-4 mr-1" />
-                  <span className="hidden sm:inline">{profile?.display_name || "Profile"}</span>
+                  <User className="h-4 w-4" />
                 </Button>
                 <Button variant="ghost" size="icon" onClick={signOut}>
                   <LogOut className="h-4 w-4" />
