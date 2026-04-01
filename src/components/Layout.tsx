@@ -4,7 +4,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { LogOut, Shield, User, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import logo from "@/assets/logo.png";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -22,9 +21,8 @@ const Layout: React.FC<LayoutProps> = ({ children, onSearch, showSearch = false 
       <header className="sticky top-0 z-50 glass border-b border-border/50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img src={logo} alt="Tom Tok Store" className="w-9 h-9 rounded-lg object-cover" />
-            <span className="font-display text-lg font-bold gradient-neon-text hidden sm:inline">
-              Tom Tok Store
+            <span className="font-display text-xl font-black gradient-neon-text">
+              bs Store
             </span>
           </Link>
 
