@@ -187,11 +187,11 @@ const AppDetail: React.FC = () => {
             </div>
             <Button
               onClick={handleDownload}
-              className="mt-6 gradient-neon text-primary-foreground neon-glow px-8"
+              className={`mt-6 px-8 neon-glow ${hasUpdate ? 'bg-yellow-500 hover:bg-yellow-600 text-black' : isInstalled ? 'bg-green-600 hover:bg-green-700' : 'gradient-neon text-primary-foreground'}`}
               size="lg"
             >
               <Download className="h-5 w-5 mr-2" />
-              Download APK
+              {hasUpdate ? "Update" : isInstalled ? "Downloaded ✓" : "Download APK"}
             </Button>
           </div>
         </motion.div>
