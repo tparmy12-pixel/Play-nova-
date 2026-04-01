@@ -40,20 +40,42 @@ const AppDetail: React.FC = () => {
     },
   });
 
+  // Check if user has installed this app
+  const { data: userInstall } = useQuery({
+    queryKey: ["user-install", id, user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("user_installs")
+        .select("*")
+        .eq("app_id", id!)
+        .eq("user_id", user!.id)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!id && !!user,
+  });
+
+  const isInstalled = !!userInstall;
+  const hasUpdate = isInstalled && app && userInstall?.installed_version !== app.version;
 
   const proceedDownload = async () => {
     if (!app || !user) return;
     
-    // Track the download
     await supabase.from("downloads").insert({ app_id: app.id, user_id: user.id });
     await supabase.rpc("increment_download_count", { _app_id: app.id });
     
+    // Track install
+    if (userInstall) {
+      await supabase.from("user_installs").update({ installed_version: app.version, updated_at: new Date().toISOString() } as any).eq("id", (userInstall as any).id);
+    } else {
+      await supabase.from("user_installs").insert({ app_id: app.id, user_id: user.id, installed_version: app.version } as any);
+    }
+
     if (!app.apk_url) {
-      toast.error("APK abhi available nahi hai. Admin se upload hone ka wait karein.");
+      toast.error("APK abhi available nahi hai.");
       return;
     }
 
-    // Direct file download from our store
     toast.success(`${app.name} download ho raha hai...`);
     const link = document.createElement("a");
     link.href = app.apk_url;
