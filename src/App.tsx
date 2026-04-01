@@ -21,6 +21,10 @@ import TermsConditions from "./pages/TermsConditions";
 import Feedback from "./pages/Feedback";
 import PromoteApp from "./pages/PromoteApp";
 import PromotionRequests from "./pages/admin/PromotionRequests";
+import UploadApp from "./pages/UploadApp";
+import MyApps from "./pages/MyApps";
+import AppReviews from "./pages/admin/AppReviews";
+import ApiSettings from "./pages/admin/ApiSettings";
 
 const queryClient = new QueryClient();
 
