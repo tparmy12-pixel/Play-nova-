@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { LogOut, Shield, User, Search } from "lucide-react";
+import { LogOut, Shield, User, Search, Upload, AppWindow } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 interface LayoutProps {
