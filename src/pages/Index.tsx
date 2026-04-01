@@ -6,7 +6,9 @@ import Layout from "@/components/Layout";
 import AppCard from "@/components/AppCard";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
-import logo from "@/assets/logo.png";
+import { useAuth } from "@/contexts/AuthContext";
+import { Upload } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const CATEGORIES = ["All", "Social", "Games", "Tools", "Entertainment", "Education", "Other"];
 
