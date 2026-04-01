@@ -58,6 +58,14 @@ const App = () => (
               path="/admin/apps/:id/edit"
               element={<ProtectedRoute adminOnly><AppForm /></ProtectedRoute>}
             />
+            <Route
+              path="/admin/reviews"
+              element={<ProtectedRoute adminOnly><AppReviews /></ProtectedRoute>}
+            />
+            <Route
+              path="/admin/api-settings"
+              element={<ProtectedRoute adminOnly><ApiSettings /></ProtectedRoute>}
+            />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsConditions />} />
@@ -66,6 +74,14 @@ const App = () => (
             <Route
               path="/admin/promotions"
               element={<ProtectedRoute adminOnly><PromotionRequests /></ProtectedRoute>}
+            />
+            <Route
+              path="/upload"
+              element={<ProtectedRoute><UploadApp /></ProtectedRoute>}
+            />
+            <Route
+              path="/my-apps"
+              element={<ProtectedRoute><MyApps /></ProtectedRoute>}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>
