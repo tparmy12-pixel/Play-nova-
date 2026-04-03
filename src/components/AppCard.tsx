@@ -16,13 +16,10 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
   };
 
   return (
-    <motion.div
-      whileHover={{ y: -4, scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-    >
+    <motion.div whileHover={{ y: -2, scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
       <Link
         to={`/app/${app.id}`}
-        className="block rounded-xl bg-card border border-border/50 overflow-hidden hover:neon-glow transition-shadow duration-300"
+        className="block rounded-xl bg-card border border-border/50 overflow-hidden hover:neon-glow transition-shadow"
       >
         <div className="aspect-square bg-muted/50 flex items-center justify-center p-4">
           {app.icon_url ? (
@@ -41,7 +38,7 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
           <div className="flex items-center justify-between mt-2">
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Star className="h-3 w-3 fill-neon-pink text-neon-pink" />
-              <span>{app.rating?.toFixed(1) || "4.5"}</span>
+              <span>{app.rating ? app.rating.toFixed(1) : "N/A"}</span>
             </div>
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Download className="h-3 w-3" />

@@ -6,97 +6,52 @@ import Layout from "@/components/Layout";
 import AppCard from "@/components/AppCard";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import { Upload } from "lucide-react";
-import { Button } from "@/components/ui/button";
-
-const CATEGORIES = ["All", "Social", "Games", "Tools", "Entertainment", "Education", "Other"];
 
 const Index: React.FC = () => {
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All");
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   const { data: apps = [], isLoading } = useQuery({
-    queryKey: ["apps"],
+    queryKey: ["apps-home"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("apps")
         .select("*")
+        .eq("status", "approved")
         .order("download_count", { ascending: false });
       if (error) throw error;
       return data;
     },
   });
 
-  const filtered = apps.filter((app) => {
-    const matchSearch = app.name.toLowerCase().includes(search.toLowerCase());
-    const matchCategory = category === "All" || app.category === category;
-    return matchSearch && matchCategory;
-  });
+  const filtered = apps.filter((app) =>
+    app.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <Layout showSearch onSearch={setSearch}>
-      {/* Floating Promote Button */}
+      {/* Promote FAB */}
       <button
         onClick={() => navigate("/promote")}
-        className="fixed bottom-6 right-6 z-[60] flex items-center gap-2 px-5 py-3 rounded-full gradient-neon text-primary-foreground text-sm font-bold neon-glow shadow-2xl hover:scale-110 transition-transform animate-pulse"
+        className="fixed bottom-20 right-4 z-[60] flex items-center gap-2 px-4 py-2.5 rounded-full gradient-neon text-primary-foreground text-xs font-bold neon-glow shadow-2xl hover:scale-110 transition-transform"
       >
-        <Sparkles className="h-5 w-5" />
-        Promote App
+        <Sparkles className="h-4 w-4" />
+        Promote
       </button>
 
-      {/* Hero Banner */}
+      {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 gradient-neon opacity-20" />
-        <div className="relative container mx-auto px-4 py-16 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className="font-display text-4xl md:text-5xl font-black gradient-neon-text mb-4">
-              bs Store
-            </h1>
-            <p className="text-muted-foreground text-lg max-w-md mx-auto">
-              Discover amazing apps and games. Download with confidence.
-            </p>
-            {user && (
-              <Button
-                onClick={() => navigate("/upload")}
-                className="mt-6 gradient-neon text-primary-foreground neon-glow"
-                size="lg"
-              >
-                <Upload className="h-5 w-5 mr-2" />
-                Upload Your App
-              </Button>
-            )}
+        <div className="absolute inset-0 gradient-neon opacity-10" />
+        <div className="relative container mx-auto px-4 py-10 text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <h1 className="font-display text-3xl font-black gradient-neon-text mb-2">bs Store</h1>
+            <p className="text-muted-foreground text-sm">Discover amazing apps & games</p>
           </motion.div>
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="container mx-auto px-4 py-6">
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setCategory(cat)}
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-                category === cat
-                  ? "gradient-neon text-primary-foreground neon-glow"
-                  : "bg-muted text-muted-foreground hover:bg-muted/80"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </section>
-
       {/* App Grid */}
-      <section className="container mx-auto px-4 pb-12">
+      <section className="container mx-auto px-4 pb-4">
         {isLoading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {Array.from({ length: 10 }).map((_, i) => (
@@ -110,21 +65,13 @@ const Index: React.FC = () => {
             ))}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-muted-foreground text-lg">No apps found</p>
-            <p className="text-muted-foreground text-sm mt-1">
-              {apps.length === 0 ? "Apps will appear here once uploaded by admin." : "Try a different search or category."}
-            </p>
+          <div className="text-center py-20 text-muted-foreground">
+            <p>No apps found</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {filtered.map((app, i) => (
-              <motion.div
-                key={app.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-              >
+              <motion.div key={app.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
                 <AppCard app={app} />
               </motion.div>
             ))}
