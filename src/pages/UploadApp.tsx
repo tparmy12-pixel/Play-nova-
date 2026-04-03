@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import Layout from "@/components/Layout";
@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Upload } from "lucide-react";
+import { Upload, AlertTriangle } from "lucide-react";
 
 const CATEGORIES = ["Social", "Games", "Tools", "Entertainment", "Education", "Other"];
 
@@ -30,6 +30,23 @@ const UploadApp: React.FC = () => {
   const [iconFile, setIconFile] = useState<File | null>(null);
   const [screenshotFiles, setScreenshotFiles] = useState<File[]>([]);
 
+  // Check developer account for Games category
+  const { data: devAccount } = useQuery({
+    queryKey: ["developer-account", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("developer_accounts")
+        .select("*")
+        .eq("user_id", user!.id)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const isDevApproved = (devAccount as any)?.status === "approved";
+  const needsDev = category === "Games" && !isDevApproved;
+
   const uploadFile = async (file: File, bucket: string, path: string) => {
     const { data, error } = await supabase.storage.from(bucket).upload(path, file, { upsert: true });
     if (error) throw error;
@@ -37,10 +54,16 @@ const UploadApp: React.FC = () => {
     return urlData.publicUrl;
   };
 
+  const detectSuspiciousKeywords = (text: string): string[] => {
+    const keywords = ["razorpay", "stripe", "upi", "paytm", "phonepe", "google pay", "payment gateway"];
+    return keywords.filter(k => text.toLowerCase().includes(k));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) { toast.error("App name is required"); return; }
-    if (!user) { toast.error("Please login first"); return; }
+    if (!name.trim()) { toast.error("App name zaroori hai"); return; }
+    if (!user) { toast.error("Pehle login karein"); return; }
+    if (needsDev) { toast.error("Game upload ke liye developer account approved hona chahiye"); return; }
     setLoading(true);
 
     try {
@@ -49,12 +72,8 @@ const UploadApp: React.FC = () => {
       let iconUrl: string | null = null;
       let screenshots: string[] = [];
 
-      if (apkFile) {
-        apkUrl = await uploadFile(apkFile, "apks", `${appId}/${apkFile.name}`);
-      }
-      if (iconFile) {
-        iconUrl = await uploadFile(iconFile, "app-assets", `icons/${appId}.png`);
-      }
+      if (apkFile) apkUrl = await uploadFile(apkFile, "apks", `${appId}/${apkFile.name}`);
+      if (iconFile) iconUrl = await uploadFile(iconFile, "app-assets", `icons/${appId}.png`);
       if (screenshotFiles.length > 0) {
         screenshots = await Promise.all(
           screenshotFiles.map((f, i) => uploadFile(f, "app-assets", `screenshots/${appId}/${i}-${f.name}`))
@@ -77,7 +96,6 @@ const UploadApp: React.FC = () => {
 
       if (error) throw error;
 
-      // Create basic review entry
       await supabase.from("app_reviews").insert({
         app_id: appId,
         scan_result: "pending",
@@ -89,47 +107,55 @@ const UploadApp: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ["apps"] });
       navigate("/my-apps");
     } catch (err: any) {
-      toast.error(err.message || "Something went wrong");
+      toast.error(err.message || "Kuch galat ho gaya");
     } finally {
       setLoading(false);
     }
   };
 
-  const detectSuspiciousKeywords = (text: string): string[] => {
-    const keywords = ["razorpay", "stripe", "upi", "paytm", "phonepe", "google pay", "payment gateway"];
-    return keywords.filter(k => text.toLowerCase().includes(k));
-  };
-
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
+      <div className="container mx-auto px-4 py-6 max-w-lg pb-20">
         <Card className="glass border-border/50">
           <CardHeader>
             <CardTitle className="font-display gradient-neon-text">Upload Your App</CardTitle>
-            <p className="text-sm text-muted-foreground">Upload karne ke baad admin review karega. Approve hone par app store mein dikhega.</p>
+            <p className="text-xs text-muted-foreground">Admin review ke baad app store mein dikhega.</p>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-2">
-                <Label>App Name *</Label>
+            {needsDev && (
+              <div className="mb-4 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/30 flex items-start gap-2">
+                <AlertTriangle className="h-4 w-4 text-yellow-400 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm text-yellow-400 font-medium">Developer Account Required</p>
+                  <p className="text-xs text-muted-foreground">Game upload ke liye pehle developer account banayein aur verify karayein.</p>
+                  <Button size="sm" variant="outline" className="mt-2" onClick={() => navigate("/developer")}>
+                    Developer Account Apply
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-1.5">
+                <Label className="text-xs">App Name *</Label>
                 <Input value={name} onChange={(e) => setName(e.target.value)} required />
               </div>
-              <div className="space-y-2">
-                <Label>Description</Label>
-                <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={4} />
+              <div className="space-y-1.5">
+                <Label className="text-xs">Description</Label>
+                <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Version</Label>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Version</Label>
                   <Input value={version} onChange={(e) => setVersion(e.target.value)} />
                 </div>
-                <div className="space-y-2">
-                  <Label>Size</Label>
-                  <Input value={size} onChange={(e) => setSize(e.target.value)} placeholder="Auto-detected" />
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Size</Label>
+                  <Input value={size} onChange={(e) => setSize(e.target.value)} placeholder="Auto" />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>Category</Label>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Category</Label>
                 <Select value={category} onValueChange={setCategory}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -137,20 +163,20 @@ const UploadApp: React.FC = () => {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
-                <Label>App Icon</Label>
+              <div className="space-y-1.5">
+                <Label className="text-xs">App Icon</Label>
                 <Input type="file" accept="image/*" onChange={(e) => setIconFile(e.target.files?.[0] || null)} />
               </div>
-              <div className="space-y-2">
-                <Label>APK File (max 200MB)</Label>
+              <div className="space-y-1.5">
+                <Label className="text-xs">APK File (max 200MB)</Label>
                 <Input type="file" accept=".apk" onChange={(e) => setApkFile(e.target.files?.[0] || null)} />
-                {apkFile && <p className="text-xs text-muted-foreground">{apkFile.name} ({(apkFile.size / (1024*1024)).toFixed(1)} MB)</p>}
+                {apkFile && <p className="text-[10px] text-muted-foreground">{apkFile.name} ({(apkFile.size / (1024*1024)).toFixed(1)} MB)</p>}
               </div>
-              <div className="space-y-2">
-                <Label>Screenshots</Label>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Screenshots</Label>
                 <Input type="file" accept="image/*" multiple onChange={(e) => setScreenshotFiles(Array.from(e.target.files || []))} />
               </div>
-              <Button type="submit" className="w-full gradient-neon text-primary-foreground neon-glow" disabled={loading}>
+              <Button type="submit" className="w-full gradient-neon text-primary-foreground neon-glow" disabled={loading || needsDev}>
                 <Upload className="h-4 w-4 mr-2" />
                 {loading ? "Uploading..." : "Upload App"}
               </Button>
