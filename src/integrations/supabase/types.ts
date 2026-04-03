@@ -35,6 +35,44 @@ export type Database = {
         }
         Relationships: []
       }
+      app_ratings: {
+        Row: {
+          app_id: string
+          created_at: string
+          id: string
+          rating: number
+          review_text: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          app_id: string
+          created_at?: string
+          id?: string
+          rating: number
+          review_text?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          app_id?: string
+          created_at?: string
+          id?: string
+          rating?: number
+          review_text?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "app_ratings_app_id_fkey"
+            columns: ["app_id"]
+            isOneToOne: false
+            referencedRelation: "apps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       app_reviews: {
         Row: {
           app_id: string
@@ -133,6 +171,45 @@ export type Database = {
           updated_at?: string
           uploaded_by?: string | null
           version?: string
+        }
+        Relationships: []
+      }
+      developer_accounts: {
+        Row: {
+          aadhar_number: string
+          created_at: string
+          id: string
+          pan_number: string
+          phone_number: string
+          rejected_reason: string | null
+          selfie_url: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          aadhar_number: string
+          created_at?: string
+          id?: string
+          pan_number: string
+          phone_number: string
+          rejected_reason?: string | null
+          selfie_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          aadhar_number?: string
+          created_at?: string
+          id?: string
+          pan_number?: string
+          phone_number?: string
+          rejected_reason?: string | null
+          selfie_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
