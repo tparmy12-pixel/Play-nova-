@@ -25,6 +25,10 @@ import UploadApp from "./pages/UploadApp";
 import MyApps from "./pages/MyApps";
 import AppReviews from "./pages/admin/AppReviews";
 import ApiSettings from "./pages/admin/ApiSettings";
+import AppsPage from "./pages/AppsPage";
+import GamesPage from "./pages/GamesPage";
+import CategoriesPage from "./pages/CategoriesPage";
+import DeveloperRegister from "./pages/DeveloperRegister";
 
 const queryClient = new QueryClient();
 
@@ -37,52 +41,29 @@ const App = () => (
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/apps" element={<AppsPage />} />
+            <Route path="/games" element={<GamesPage />} />
+            <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/app/:id" element={<AppDetail />} />
-            <Route
-              path="/profile"
-              element={<ProtectedRoute><Profile /></ProtectedRoute>}
-            />
-            <Route
-              path="/admin"
-              element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>}
-            />
-            <Route
-              path="/admin/apps/new"
-              element={<ProtectedRoute adminOnly><AppForm /></ProtectedRoute>}
-            />
-            <Route
-              path="/admin/apps/:id/edit"
-              element={<ProtectedRoute adminOnly><AppForm /></ProtectedRoute>}
-            />
-            <Route
-              path="/admin/reviews"
-              element={<ProtectedRoute adminOnly><AppReviews /></ProtectedRoute>}
-            />
-            <Route
-              path="/admin/api-settings"
-              element={<ProtectedRoute adminOnly><ApiSettings /></ProtectedRoute>}
-            />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/admin" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/admin/apps/new" element={<ProtectedRoute adminOnly><AppForm /></ProtectedRoute>} />
+            <Route path="/admin/apps/:id/edit" element={<ProtectedRoute adminOnly><AppForm /></ProtectedRoute>} />
+            <Route path="/admin/reviews" element={<ProtectedRoute adminOnly><AppReviews /></ProtectedRoute>} />
+            <Route path="/admin/api-settings" element={<ProtectedRoute adminOnly><ApiSettings /></ProtectedRoute>} />
+            <Route path="/admin/promotions" element={<ProtectedRoute adminOnly><PromotionRequests /></ProtectedRoute>} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsConditions />} />
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/promote" element={<PromoteApp />} />
-            <Route
-              path="/admin/promotions"
-              element={<ProtectedRoute adminOnly><PromotionRequests /></ProtectedRoute>}
-            />
-            <Route
-              path="/upload"
-              element={<ProtectedRoute><UploadApp /></ProtectedRoute>}
-            />
-            <Route
-              path="/my-apps"
-              element={<ProtectedRoute><MyApps /></ProtectedRoute>}
-            />
+            <Route path="/upload" element={<ProtectedRoute><UploadApp /></ProtectedRoute>} />
+            <Route path="/my-apps" element={<ProtectedRoute><MyApps /></ProtectedRoute>} />
+            <Route path="/developer" element={<ProtectedRoute><DeveloperRegister /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
