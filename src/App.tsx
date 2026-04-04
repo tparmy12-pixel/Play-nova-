@@ -29,6 +29,9 @@ import AppsPage from "./pages/AppsPage";
 import GamesPage from "./pages/GamesPage";
 import CategoriesPage from "./pages/CategoriesPage";
 import DeveloperRegister from "./pages/DeveloperRegister";
+import DeveloperWallet from "./pages/DeveloperWallet";
+import SDKDocs from "./pages/SDKDocs";
+import AdminWithdrawals from "./pages/admin/AdminWithdrawals";
 
 const queryClient = new QueryClient();
 
