@@ -26,6 +26,8 @@ const UploadApp: React.FC = () => {
   const [size, setSize] = useState("");
   const [category, setCategory] = useState("Other");
   const [loading, setLoading] = useState(false);
+  const [priceType, setPriceType] = useState("free");
+  const [price, setPrice] = useState("");
   const [apkFile, setApkFile] = useState<File | null>(null);
   const [iconFile, setIconFile] = useState<File | null>(null);
   const [screenshotFiles, setScreenshotFiles] = useState<File[]>([]);
