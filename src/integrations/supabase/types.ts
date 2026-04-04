@@ -127,6 +127,8 @@ export type Database = {
           icon_url: string | null
           id: string
           name: string
+          price: number | null
+          price_type: string
           rating: number | null
           screenshots: string[] | null
           size: string | null
@@ -145,6 +147,8 @@ export type Database = {
           icon_url?: string | null
           id?: string
           name: string
+          price?: number | null
+          price_type?: string
           rating?: number | null
           screenshots?: string[] | null
           size?: string | null
@@ -163,6 +167,8 @@ export type Database = {
           icon_url?: string | null
           id?: string
           name?: string
+          price?: number | null
+          price_type?: string
           rating?: number | null
           screenshots?: string[] | null
           size?: string | null

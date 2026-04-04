@@ -1,0 +1,3 @@
+
+ALTER TABLE public.apps ADD COLUMN price_type TEXT NOT NULL DEFAULT 'free';
+ALTER TABLE public.apps ADD COLUMN price NUMERIC(12,2) DEFAULT 0;
