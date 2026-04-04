@@ -94,6 +94,8 @@ const UploadApp: React.FC = () => {
         screenshots,
         uploaded_by: user.id,
         status: "pending",
+        price_type: priceType,
+        price: priceType === "paid" ? parseFloat(price) || 0 : 0,
       } as any);
 
       if (error) throw error;
