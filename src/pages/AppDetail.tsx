@@ -108,6 +108,24 @@ const AppDetail: React.FC = () => {
 
   const isInstalled = !!userInstall;
   const hasUpdate = isInstalled && app && userInstall?.installed_version !== app.version;
+  const isPaid = (app as any)?.price_type === "paid" && Number((app as any)?.price) > 0;
+  const [purchasing, setPurchasing] = useState(false);
+
+  // Check if user already purchased this paid app
+  const { data: hasPurchased } = useQuery({
+    queryKey: ["user-purchase", id, user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("payment_transactions")
+        .select("id")
+        .eq("app_id", id!)
+        .eq("buyer_id", user!.id)
+        .eq("status", "completed")
+        .maybeSingle();
+      return !!data;
+    },
+    enabled: !!id && !!user && isPaid,
+  });
 
   const proceedDownload = async () => {
     if (!app || !user) return;
@@ -130,9 +148,70 @@ const AppDetail: React.FC = () => {
     queryClient.invalidateQueries({ queryKey: ["user-install", id] });
   };
 
+  const handlePurchase = async () => {
+    if (!app || !user) { toast.error("Please login first"); return; }
+    setPurchasing(true);
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      const token = session?.session?.access_token;
+      if (!token) { toast.error("Login required"); return; }
+
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ app_id: app.id, product_name: app.name, amount: Number((app as any).price) }),
+      });
+      const orderData = await res.json();
+      if (!orderData.order_id) { toast.error(orderData.error || "Order failed"); return; }
+
+      // Open Razorpay checkout
+      const options = {
+        key: orderData.key_id,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        order_id: orderData.order_id,
+        name: "bs Store",
+        description: `Purchase: ${app.name}`,
+        handler: async (response: any) => {
+          // Verify payment
+          const verifyRes = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/verify-payment`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            }),
+          });
+          const verifyData = await verifyRes.json();
+          if (verifyData.verified) {
+            toast.success("Payment successful! Downloading...");
+            queryClient.invalidateQueries({ queryKey: ["user-purchase", id] });
+            proceedDownload();
+          } else {
+            toast.error("Payment verification failed");
+          }
+        },
+      };
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    } catch (err: any) {
+      toast.error(err.message || "Payment error");
+    } finally {
+      setPurchasing(false);
+    }
+  };
+
   const handleDownload = async () => {
     if (!app) return;
     if (!user) { toast.error("Please login to download"); return; }
+    
+    // If paid and not purchased yet, redirect to purchase
+    if (isPaid && !hasPurchased) {
+      handlePurchase();
+      return;
+    }
+
     if (promotions.length > 0) {
       const randomPromo = promotions[Math.floor(Math.random() * promotions.length)];
       setAdVideoUrl(randomPromo.video_url);

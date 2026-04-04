@@ -190,6 +190,24 @@ const UploadApp: React.FC = () => {
                   </SelectContent>
                 </Select>
               </div>
+              {/* Price Type */}
+              <div className="space-y-1.5">
+                <Label className="text-xs">App Type *</Label>
+                <Select value={priceType} onValueChange={setPriceType}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="free">🆓 Free</SelectItem>
+                    <SelectItem value="paid">💰 Paid</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {priceType === "paid" && (
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Price (₹) *</Label>
+                  <Input type="number" min="1" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g. 49" />
+                  <p className="text-[10px] text-muted-foreground">30% platform commission katega, 70% aapko milega</p>
+                </div>
+              )}
               <div className="space-y-1.5">
                 <Label className="text-xs">App Icon</Label>
                 <Input type="file" accept="image/*" onChange={(e) => setIconFile(e.target.files?.[0] || null)} />
