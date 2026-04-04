@@ -46,6 +46,8 @@ const Profile: React.FC = () => {
     { label: "My Apps", icon: AppWindow, path: "/my-apps", description: "Aapke uploaded apps manage karein" },
     { label: "Promote App", icon: Sparkles, path: "/promote", description: "Apne app ki ad lagayein" },
     { label: "Developer Account", icon: Gamepad2, path: "/developer", description: "Game upload ke liye developer verification" },
+    { label: "My Wallet", icon: Wallet, path: "/wallet", description: "Earnings, transactions aur withdrawal" },
+    { label: "Payment SDK", icon: Code, path: "/sdk-docs", description: "In-app purchase SDK documentation" },
   ];
 
   if (!user) {

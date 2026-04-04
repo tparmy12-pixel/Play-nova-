@@ -62,6 +62,11 @@ const AdminDashboard: React.FC = () => {
                 <Sparkles className="h-4 w-4 mr-2" /> Promotions
               </Button>
             </Link>
+            <Link to="/admin/withdrawals">
+              <Button variant="outline" className="border-orange-500 text-orange-500 hover:bg-orange-500/10">
+                <Wallet className="h-4 w-4 mr-2" /> Withdrawals
+              </Button>
+            </Link>
             <Link to="/admin/apps/new">
               <Button className="gradient-neon text-primary-foreground neon-glow">
                 <Plus className="h-4 w-4 mr-2" /> Upload App
