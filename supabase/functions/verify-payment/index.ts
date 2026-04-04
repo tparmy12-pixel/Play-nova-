@@ -1,10 +1,18 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { hmac } from "https://deno.land/x/hmac@v2.0.1/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+async function hmacSha256Hex(key: string, message: string): Promise<string> {
+  const enc = new TextEncoder();
+  const cryptoKey = await crypto.subtle.importKey(
+    "raw", enc.encode(key), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
+  );
+  const sig = await crypto.subtle.sign("HMAC", cryptoKey, enc.encode(message));
+  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -31,7 +39,6 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: "Missing payment details" }), { status: 400, headers: corsHeaders });
     }
 
-    // Get Razorpay secret
     const adminClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -43,9 +50,8 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: "Payment not configured" }), { status: 500, headers: corsHeaders });
     }
 
-    // Verify signature
     const body = `${razorpay_order_id}|${razorpay_payment_id}`;
-    const expectedSig = hmac("sha256", keySecret, body, "utf8", "hex");
+    const expectedSig = await hmacSha256Hex(keySecret, body);
 
     if (expectedSig !== razorpay_signature) {
       return new Response(JSON.stringify({ error: "Invalid signature", verified: false }), { status: 400, headers: corsHeaders });
