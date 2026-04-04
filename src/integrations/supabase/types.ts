@@ -213,6 +213,36 @@ export type Database = {
         }
         Relationships: []
       }
+      developer_wallets: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          total_earned: number
+          total_withdrawn: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_earned?: number
+          total_withdrawn?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          total_earned?: number
+          total_withdrawn?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       downloads: {
         Row: {
           app_id: string
@@ -241,6 +271,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      payment_transactions: {
+        Row: {
+          amount: number
+          app_id: string
+          buyer_id: string
+          created_at: string
+          developer_id: string
+          developer_share: number
+          id: string
+          platform_commission: number
+          product_name: string
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          app_id: string
+          buyer_id: string
+          created_at?: string
+          developer_id: string
+          developer_share?: number
+          id?: string
+          platform_commission?: number
+          product_name: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          app_id?: string
+          buyer_id?: string
+          created_at?: string
+          developer_id?: string
+          developer_share?: number
+          id?: string
+          platform_commission?: number
+          product_name?: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -367,11 +445,57 @@ export type Database = {
         }
         Relationships: []
       }
+      withdrawal_requests: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          bank_details: string | null
+          created_at: string
+          id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string
+          upi_id: string | null
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          bank_details?: string | null
+          created_at?: string
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          upi_id?: string | null
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          bank_details?: string | null
+          created_at?: string
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          upi_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      credit_developer_wallet: {
+        Args: { _transaction_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
