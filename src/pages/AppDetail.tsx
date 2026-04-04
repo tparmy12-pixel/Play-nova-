@@ -282,13 +282,19 @@ const AppDetail: React.FC = () => {
               <span className="flex items-center gap-1"><Download className="h-3 w-3" />{app.download_count}</span>
               <span className="flex items-center gap-1"><HardDrive className="h-3 w-3" />{app.size || "N/A"}</span>
               <span className="flex items-center gap-1"><Tag className="h-3 w-3" />v{app.version}</span>
+              {isPaid && <span className="flex items-center gap-1 text-green-400 font-semibold"><IndianRupee className="h-3 w-3" />₹{Number((app as any).price)}</span>}
+              {!isPaid && <span className="text-green-400 font-semibold">Free</span>}
             </div>
             <Button
               onClick={handleDownload}
-              className={`mt-3 px-6 text-sm neon-glow ${hasUpdate ? 'bg-yellow-500 hover:bg-yellow-600 text-black' : isInstalled ? 'bg-green-600 hover:bg-green-700' : 'gradient-neon text-primary-foreground'}`}
+              disabled={purchasing}
+              className={`mt-3 px-6 text-sm neon-glow ${hasUpdate ? 'bg-yellow-500 hover:bg-yellow-600 text-black' : isInstalled ? 'bg-green-600 hover:bg-green-700' : isPaid && !hasPurchased ? 'bg-orange-500 hover:bg-orange-600 text-primary-foreground' : 'gradient-neon text-primary-foreground'}`}
             >
-              <Download className="h-4 w-4 mr-1" />
-              {hasUpdate ? "Update" : isInstalled ? "Downloaded ✓" : "Download APK"}
+              {isPaid && !hasPurchased ? (
+                <><ShoppingCart className="h-4 w-4 mr-1" /> Buy ₹{Number((app as any).price)}</>
+              ) : (
+                <><Download className="h-4 w-4 mr-1" /> {hasUpdate ? "Update" : isInstalled ? "Downloaded ✓" : "Install"}</>
+              )}
             </Button>
           </div>
         </motion.div>
