@@ -7,7 +7,7 @@ import Layout from "@/components/Layout";
 import VideoAd from "@/components/VideoAd";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Download, Star, Calendar, HardDrive, Tag, Shield, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { Download, Star, Calendar, HardDrive, Tag, Shield, CheckCircle, XCircle, AlertTriangle, IndianRupee, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
