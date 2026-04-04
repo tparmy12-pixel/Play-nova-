@@ -7,7 +7,7 @@ import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, Mail, User, Upload, Sparkles, Shield, AppWindow, Gamepad2 } from "lucide-react";
+import { Download, Mail, User, Upload, Sparkles, Shield, AppWindow, Gamepad2, Wallet, Code } from "lucide-react";
 
 const Profile: React.FC = () => {
   const { user, profile, isAdmin } = useAuth();
