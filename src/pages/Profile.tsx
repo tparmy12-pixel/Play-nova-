@@ -7,7 +7,7 @@ import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, Mail, User, Upload, Sparkles, Shield, AppWindow, Gamepad2 } from "lucide-react";
+import { Download, Mail, User, Upload, Sparkles, Shield, AppWindow, Gamepad2, Wallet, Code } from "lucide-react";
 
 const Profile: React.FC = () => {
   const { user, profile, isAdmin } = useAuth();
@@ -46,6 +46,8 @@ const Profile: React.FC = () => {
     { label: "My Apps", icon: AppWindow, path: "/my-apps", description: "Aapke uploaded apps manage karein" },
     { label: "Promote App", icon: Sparkles, path: "/promote", description: "Apne app ki ad lagayein" },
     { label: "Developer Account", icon: Gamepad2, path: "/developer", description: "Game upload ke liye developer verification" },
+    { label: "My Wallet", icon: Wallet, path: "/wallet", description: "Earnings, transactions aur withdrawal" },
+    { label: "Payment SDK", icon: Code, path: "/sdk-docs", description: "In-app purchase SDK documentation" },
   ];
 
   if (!user) {

@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Upload, AlertTriangle } from "lucide-react";
+import { Upload, AlertTriangle, Shield, Code } from "lucide-react";
 
 const CATEGORIES = ["Social", "Games", "Tools", "Entertainment", "Education", "Other"];
 
@@ -122,6 +122,29 @@ const UploadApp: React.FC = () => {
             <p className="text-xs text-muted-foreground">Admin review ke baad app store mein dikhega.</p>
           </CardHeader>
           <CardContent>
+            {/* SDK & Commission Notice */}
+            <div className="mb-4 p-3 rounded-lg bg-primary/5 border border-primary/20">
+              <div className="flex items-start gap-2 mb-2">
+                <Shield className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-primary">Payment SDK Required</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Agar aapke app mein paid features hain to sirf <strong>bs Store Payment SDK</strong> use karein. 
+                    Koi bhi external payment gateway (Razorpay, Stripe, UPI direct) allowed nahi hai — detect hone par app reject ho jayega.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2 mt-2">
+                <Code className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs text-muted-foreground">
+                    <strong>Commission:</strong> 30% platform, 70% developer. 
+                    <a href="/sdk-docs" className="text-primary underline ml-1" onClick={(e) => { e.preventDefault(); navigate("/sdk-docs"); }}>SDK Documentation →</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {needsDev && (
               <div className="mb-4 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/30 flex items-start gap-2">
                 <AlertTriangle className="h-4 w-4 text-yellow-400 shrink-0 mt-0.5" />

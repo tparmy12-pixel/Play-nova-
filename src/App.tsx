@@ -29,6 +29,9 @@ import AppsPage from "./pages/AppsPage";
 import GamesPage from "./pages/GamesPage";
 import CategoriesPage from "./pages/CategoriesPage";
 import DeveloperRegister from "./pages/DeveloperRegister";
+import DeveloperWallet from "./pages/DeveloperWallet";
+import SDKDocs from "./pages/SDKDocs";
+import AdminWithdrawals from "./pages/admin/AdminWithdrawals";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +67,9 @@ const App = () => (
             <Route path="/upload" element={<ProtectedRoute><UploadApp /></ProtectedRoute>} />
             <Route path="/my-apps" element={<ProtectedRoute><MyApps /></ProtectedRoute>} />
             <Route path="/developer" element={<ProtectedRoute><DeveloperRegister /></ProtectedRoute>} />
+            <Route path="/wallet" element={<ProtectedRoute><DeveloperWallet /></ProtectedRoute>} />
+            <Route path="/sdk-docs" element={<SDKDocs />} />
+            <Route path="/admin/withdrawals" element={<ProtectedRoute adminOnly><AdminWithdrawals /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
