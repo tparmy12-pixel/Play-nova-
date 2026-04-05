@@ -97,6 +97,7 @@ const UploadApp: React.FC = () => {
         status: "pending",
         price_type: priceType,
         price: priceType === "paid" ? parseFloat(price) || 0 : 0,
+        video_url: videoUrl || null,
       } as any);
 
       if (error) throw error;
