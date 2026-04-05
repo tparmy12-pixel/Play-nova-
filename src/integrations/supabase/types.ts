@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_banners: {
+        Row: {
+          click_count: number
+          created_at: string
+          created_by: string | null
+          id: string
+          image_url: string
+          is_active: boolean
+          link_url: string | null
+          position: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          click_count?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url: string
+          is_active?: boolean
+          link_url?: string | null
+          position?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          click_count?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          link_url?: string | null
+          position?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       admin_settings: {
         Row: {
           id: string
@@ -137,6 +176,7 @@ export type Database = {
           updated_at: string
           uploaded_by: string | null
           version: string
+          video_url: string | null
         }
         Insert: {
           apk_url?: string | null
@@ -157,6 +197,7 @@ export type Database = {
           updated_at?: string
           uploaded_by?: string | null
           version?: string
+          video_url?: string | null
         }
         Update: {
           apk_url?: string | null
@@ -177,6 +218,7 @@ export type Database = {
           updated_at?: string
           uploaded_by?: string | null
           version?: string
+          video_url?: string | null
         }
         Relationships: []
       }
@@ -508,6 +550,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_banner_click: {
+        Args: { _banner_id: string }
+        Returns: undefined
       }
       increment_download_count: {
         Args: { _app_id: string }
