@@ -5,9 +5,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import Layout from "@/components/Layout";
 import VideoAd from "@/components/VideoAd";
+import ShareButton from "@/components/ShareButton";
+import AdBanner from "@/components/AdBanner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Download, Star, Calendar, HardDrive, Tag, Shield, CheckCircle, XCircle, AlertTriangle, IndianRupee, ShoppingCart } from "lucide-react";
+import { Download, Star, HardDrive, Tag, Shield, CheckCircle, XCircle, AlertTriangle, IndianRupee, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
@@ -20,6 +22,7 @@ const AppDetail: React.FC = () => {
   const [userRating, setUserRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
   const [submittingRating, setSubmittingRating] = useState(false);
+  const [purchasing, setPurchasing] = useState(false);
 
   const { data: app, isLoading } = useQuery({
     queryKey: ["app", id],
@@ -29,6 +32,16 @@ const AppDetail: React.FC = () => {
       return data;
     },
     enabled: !!id,
+  });
+
+  // Fetch developer name
+  const { data: developerProfile } = useQuery({
+    queryKey: ["developer-profile", app?.uploaded_by],
+    queryFn: async () => {
+      const { data } = await supabase.from("profiles").select("display_name").eq("id", app!.uploaded_by!).single();
+      return data;
+    },
+    enabled: !!app?.uploaded_by,
   });
 
   const { data: promotions = [] } = useQuery({
@@ -58,7 +71,6 @@ const AppDetail: React.FC = () => {
     enabled: !!id && !!user,
   });
 
-  // Fetch ratings
   const { data: ratings = [] } = useQuery({
     queryKey: ["app-ratings", id],
     queryFn: async () => {
@@ -73,7 +85,6 @@ const AppDetail: React.FC = () => {
     enabled: !!id,
   });
 
-  // User's existing rating
   const { data: myRating } = useQuery({
     queryKey: ["my-rating", id, user?.id],
     queryFn: async () => {
@@ -92,7 +103,6 @@ const AppDetail: React.FC = () => {
     enabled: !!id && !!user,
   });
 
-  // App review/safety info
   const { data: appReview } = useQuery({
     queryKey: ["app-review", id],
     queryFn: async () => {
@@ -108,10 +118,8 @@ const AppDetail: React.FC = () => {
 
   const isInstalled = !!userInstall;
   const hasUpdate = isInstalled && app && userInstall?.installed_version !== app.version;
-  const isPaid = (app as any)?.price_type === "paid" && Number((app as any)?.price) > 0;
-  const [purchasing, setPurchasing] = useState(false);
+  const isPaid = app?.price_type === "paid" && Number(app?.price) > 0;
 
-  // Check if user already purchased this paid app
   const { data: hasPurchased } = useQuery({
     queryKey: ["user-purchase", id, user?.id],
     queryFn: async () => {
@@ -155,16 +163,13 @@ const AppDetail: React.FC = () => {
       const { data: session } = await supabase.auth.getSession();
       const token = session?.session?.access_token;
       if (!token) { toast.error("Login required"); return; }
-
       const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-order`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ app_id: app.id, product_name: app.name, amount: Number((app as any).price) }),
+        body: JSON.stringify({ app_id: app.id, product_name: app.name, amount: Number(app.price) }),
       });
       const orderData = await res.json();
       if (!orderData.order_id) { toast.error(orderData.error || "Order failed"); return; }
-
-      // Open Razorpay checkout
       const options = {
         key: orderData.key_id,
         amount: orderData.amount,
@@ -173,7 +178,6 @@ const AppDetail: React.FC = () => {
         name: "bs Store",
         description: `Purchase: ${app.name}`,
         handler: async (response: any) => {
-          // Verify payment
           const verifyRes = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/verify-payment`, {
             method: "POST",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -205,13 +209,7 @@ const AppDetail: React.FC = () => {
   const handleDownload = async () => {
     if (!app) return;
     if (!user) { toast.error("Please login to download"); return; }
-    
-    // If paid and not purchased yet, redirect to purchase
-    if (isPaid && !hasPurchased) {
-      handlePurchase();
-      return;
-    }
-
+    if (isPaid && !hasPurchased) { handlePurchase(); return; }
     if (promotions.length > 0) {
       const randomPromo = promotions[Math.floor(Math.random() * promotions.length)];
       setAdVideoUrl(randomPromo.video_url);
@@ -249,8 +247,8 @@ const AppDetail: React.FC = () => {
   }
 
   const avgRating = ratings.length > 0 ? (ratings.reduce((s, r) => s + (r as any).rating, 0) / ratings.length) : null;
+  const videoUrl = (app as any).video_url;
 
-  // Safety features list
   const safetyFeatures = [
     { label: "APK File Available", has: !!app.apk_url, icon: app.apk_url ? CheckCircle : XCircle },
     { label: "App Icon", has: !!app.icon_url, icon: app.icon_url ? CheckCircle : XCircle },
@@ -265,6 +263,7 @@ const AppDetail: React.FC = () => {
       {showAd && adVideoUrl && <VideoAd videoUrl={adVideoUrl} onComplete={() => { setShowAd(false); proceedDownload(); }} onSkip={() => { setShowAd(false); proceedDownload(); }} skipAfterSeconds={4} />}
 
       <div className="container mx-auto px-4 py-6 pb-20 max-w-2xl">
+        {/* Header with share */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex gap-4">
           <div className="shrink-0">
             {app.icon_url ? (
@@ -276,13 +275,21 @@ const AppDetail: React.FC = () => {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="font-display text-xl font-black text-foreground truncate">{app.name}</h1>
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <h1 className="font-display text-xl font-black text-foreground truncate">{app.name}</h1>
+                {developerProfile?.display_name && (
+                  <p className="text-xs text-primary">by {developerProfile.display_name}</p>
+                )}
+              </div>
+              <ShareButton appName={app.name} appId={app.id} />
+            </div>
             <div className="flex flex-wrap gap-3 mt-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1"><Star className="h-3 w-3 fill-neon-pink text-neon-pink" />{avgRating ? avgRating.toFixed(1) : "N/A"} ({ratings.length})</span>
               <span className="flex items-center gap-1"><Download className="h-3 w-3" />{app.download_count}</span>
               <span className="flex items-center gap-1"><HardDrive className="h-3 w-3" />{app.size || "N/A"}</span>
               <span className="flex items-center gap-1"><Tag className="h-3 w-3" />v{app.version}</span>
-              {isPaid && <span className="flex items-center gap-1 text-green-400 font-semibold"><IndianRupee className="h-3 w-3" />₹{Number((app as any).price)}</span>}
+              {isPaid && <span className="flex items-center gap-1 text-green-400 font-semibold"><IndianRupee className="h-3 w-3" />₹{Number(app.price)}</span>}
               {!isPaid && <span className="text-green-400 font-semibold">Free</span>}
             </div>
             <Button
@@ -291,7 +298,7 @@ const AppDetail: React.FC = () => {
               className={`mt-3 px-6 text-sm neon-glow ${hasUpdate ? 'bg-yellow-500 hover:bg-yellow-600 text-black' : isInstalled ? 'bg-green-600 hover:bg-green-700' : isPaid && !hasPurchased ? 'bg-orange-500 hover:bg-orange-600 text-primary-foreground' : 'gradient-neon text-primary-foreground'}`}
             >
               {isPaid && !hasPurchased ? (
-                <><ShoppingCart className="h-4 w-4 mr-1" /> Buy ₹{Number((app as any).price)}</>
+                <><ShoppingCart className="h-4 w-4 mr-1" /> Buy ₹{Number(app.price)}</>
               ) : (
                 <><Download className="h-4 w-4 mr-1" /> {hasUpdate ? "Update" : isInstalled ? "Downloaded ✓" : "Install"}</>
               )}
@@ -310,6 +317,30 @@ const AppDetail: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Demo Video */}
+        {videoUrl && (
+          <div className="mt-6">
+            <h2 className="font-display text-sm font-bold text-foreground mb-2">Demo Video</h2>
+            {videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be") ? (
+              <div className="aspect-video rounded-lg overflow-hidden border border-border/50">
+                <iframe
+                  src={videoUrl.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/")}
+                  className="w-full h-full"
+                  allowFullScreen
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                />
+              </div>
+            ) : (
+              <video src={videoUrl} controls className="w-full rounded-lg border border-border/50" />
+            )}
+          </div>
+        )}
+
+        {/* Ad Banner on app detail */}
+        <div className="mt-6">
+          <AdBanner position="app_detail" />
+        </div>
 
         {/* About */}
         <div className="mt-6">
@@ -345,13 +376,7 @@ const AppDetail: React.FC = () => {
                 </button>
               ))}
             </div>
-            <Textarea
-              placeholder="Review likhein (optional)..."
-              value={reviewText}
-              onChange={(e) => setReviewText(e.target.value)}
-              rows={2}
-              className="mb-2"
-            />
+            <Textarea placeholder="Review likhein (optional)..." value={reviewText} onChange={(e) => setReviewText(e.target.value)} rows={2} className="mb-2" />
             <Button onClick={handleSubmitRating} disabled={submittingRating || userRating === 0} size="sm" className="gradient-neon text-primary-foreground">
               {myRating ? "Update Rating" : "Submit Rating"}
             </Button>
