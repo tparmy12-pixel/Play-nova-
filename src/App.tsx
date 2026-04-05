@@ -32,6 +32,7 @@ import DeveloperRegister from "./pages/DeveloperRegister";
 import DeveloperWallet from "./pages/DeveloperWallet";
 import SDKDocs from "./pages/SDKDocs";
 import AdminWithdrawals from "./pages/admin/AdminWithdrawals";
+import ManageBanners from "./pages/admin/ManageBanners";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +71,7 @@ const App = () => (
             <Route path="/wallet" element={<ProtectedRoute><DeveloperWallet /></ProtectedRoute>} />
             <Route path="/sdk-docs" element={<SDKDocs />} />
             <Route path="/admin/withdrawals" element={<ProtectedRoute adminOnly><AdminWithdrawals /></ProtectedRoute>} />
+            <Route path="/admin/banners" element={<ProtectedRoute adminOnly><ManageBanners /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

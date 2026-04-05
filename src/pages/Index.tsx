@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/Layout";
 import AppCard from "@/components/AppCard";
+import AdBanner from "@/components/AdBanner";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 
@@ -20,7 +21,15 @@ const Index: React.FC = () => {
         .eq("status", "approved")
         .order("download_count", { ascending: false });
       if (error) throw error;
-      return data;
+      
+      // Fetch developer names
+      const uploaderIds = [...new Set((data || []).map(a => a.uploaded_by).filter(Boolean))];
+      let profileMap: Record<string, string> = {};
+      if (uploaderIds.length > 0) {
+        const { data: profiles } = await supabase.from("profiles").select("id, display_name").in("id", uploaderIds);
+        profiles?.forEach(p => { if (p.display_name) profileMap[p.id] = p.display_name; });
+      }
+      return (data || []).map(app => ({ ...app, developer_name: app.uploaded_by ? profileMap[app.uploaded_by] : undefined }));
     },
   });
 
@@ -48,6 +57,11 @@ const Index: React.FC = () => {
             <p className="text-muted-foreground text-sm">Discover amazing apps & games</p>
           </motion.div>
         </div>
+      </section>
+
+      {/* Ad Banners */}
+      <section className="container mx-auto py-3">
+        <AdBanner position="home" />
       </section>
 
       {/* App Grid */}

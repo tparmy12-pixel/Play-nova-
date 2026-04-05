@@ -1,11 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Download, Star } from "lucide-react";
+import { Download, Star, IndianRupee } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 import { motion } from "framer-motion";
 
 interface AppCardProps {
-  app: Tables<"apps">;
+  app: Tables<"apps"> & { developer_name?: string };
 }
 
 const AppCard: React.FC<AppCardProps> = ({ app }) => {
@@ -14,6 +14,8 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
     if (count >= 1_000) return `${(count / 1_000).toFixed(1)}K`;
     return count.toString();
   };
+
+  const isPaid = app.price_type === "paid" && Number(app.price) > 0;
 
   return (
     <motion.div whileHover={{ y: -2, scale: 1.02 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
@@ -34,16 +36,25 @@ const AppCard: React.FC<AppCardProps> = ({ app }) => {
         </div>
         <div className="p-3">
           <h3 className="font-semibold text-sm truncate text-foreground">{app.name}</h3>
+          {app.developer_name && (
+            <p className="text-[10px] text-muted-foreground truncate">by {app.developer_name}</p>
+          )}
           <p className="text-xs text-muted-foreground truncate">{app.category}</p>
           <div className="flex items-center justify-between mt-2">
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Star className="h-3 w-3 fill-neon-pink text-neon-pink" />
-              <span>{app.rating ? app.rating.toFixed(1) : "N/A"}</span>
+              <span>{app.rating ? Number(app.rating).toFixed(1) : "N/A"}</span>
             </div>
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Download className="h-3 w-3" />
-              <span>{formatCount(app.download_count)}</span>
-            </div>
+            {isPaid ? (
+              <span className="text-xs font-semibold text-green-400 flex items-center gap-0.5">
+                <IndianRupee className="h-3 w-3" />₹{Number(app.price)}
+              </span>
+            ) : (
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <Download className="h-3 w-3" />
+                <span>{formatCount(app.download_count)}</span>
+              </div>
+            )}
           </div>
         </div>
       </Link>

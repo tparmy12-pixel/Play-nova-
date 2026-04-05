@@ -31,6 +31,7 @@ const UploadApp: React.FC = () => {
   const [apkFile, setApkFile] = useState<File | null>(null);
   const [iconFile, setIconFile] = useState<File | null>(null);
   const [screenshotFiles, setScreenshotFiles] = useState<File[]>([]);
+  const [videoUrl, setVideoUrl] = useState("");
 
   // Check developer account for Games category
   const { data: devAccount } = useQuery({
@@ -96,6 +97,7 @@ const UploadApp: React.FC = () => {
         status: "pending",
         price_type: priceType,
         price: priceType === "paid" ? parseFloat(price) || 0 : 0,
+        video_url: videoUrl || null,
       } as any);
 
       if (error) throw error;
@@ -220,6 +222,10 @@ const UploadApp: React.FC = () => {
               <div className="space-y-1.5">
                 <Label className="text-xs">Screenshots</Label>
                 <Input type="file" accept="image/*" multiple onChange={(e) => setScreenshotFiles(Array.from(e.target.files || []))} />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Demo Video URL (YouTube link)</Label>
+                <Input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://youtube.com/watch?v=..." />
               </div>
               <Button type="submit" className="w-full gradient-neon text-primary-foreground neon-glow" disabled={loading || needsDev}>
                 <Upload className="h-4 w-4 mr-2" />
