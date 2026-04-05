@@ -67,6 +67,11 @@ const AdminDashboard: React.FC = () => {
                 <Wallet className="h-4 w-4 mr-2" /> Withdrawals
               </Button>
             </Link>
+            <Link to="/admin/banners">
+              <Button variant="outline" className="border-cyan-500 text-cyan-500 hover:bg-cyan-500/10">
+                <Image className="h-4 w-4 mr-2" /> Ads & Banners
+              </Button>
+            </Link>
             <Link to="/admin/apps/new">
               <Button className="gradient-neon text-primary-foreground neon-glow">
                 <Plus className="h-4 w-4 mr-2" /> Upload App

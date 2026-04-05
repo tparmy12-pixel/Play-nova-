@@ -71,6 +71,7 @@ const App = () => (
             <Route path="/wallet" element={<ProtectedRoute><DeveloperWallet /></ProtectedRoute>} />
             <Route path="/sdk-docs" element={<SDKDocs />} />
             <Route path="/admin/withdrawals" element={<ProtectedRoute adminOnly><AdminWithdrawals /></ProtectedRoute>} />
+            <Route path="/admin/banners" element={<ProtectedRoute adminOnly><ManageBanners /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

@@ -59,6 +59,11 @@ const Index: React.FC = () => {
         </div>
       </section>
 
+      {/* Ad Banners */}
+      <section className="container mx-auto py-3">
+        <AdBanner position="home" />
+      </section>
+
       {/* App Grid */}
       <section className="container mx-auto px-4 pb-4">
         {isLoading ? (

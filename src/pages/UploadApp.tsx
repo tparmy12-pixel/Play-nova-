@@ -223,6 +223,10 @@ const UploadApp: React.FC = () => {
                 <Label className="text-xs">Screenshots</Label>
                 <Input type="file" accept="image/*" multiple onChange={(e) => setScreenshotFiles(Array.from(e.target.files || []))} />
               </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Demo Video URL (YouTube link)</Label>
+                <Input value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="https://youtube.com/watch?v=..." />
+              </div>
               <Button type="submit" className="w-full gradient-neon text-primary-foreground neon-glow" disabled={loading || needsDev}>
                 <Upload className="h-4 w-4 mr-2" />
                 {loading ? "Uploading..." : "Upload App"}
