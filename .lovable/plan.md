@@ -1,54 +1,36 @@
-## Plan: Major App Store Overhaul
+## Play Store-like Features Upgrade
 
-### Phase 1: Clean Up & Bottom Navigation
-1. **Remove all sample app data** (fake images/icons wale apps delete karo database se)
-2. **Bottom Navigation Bar** - Play Store jaisa:
-   - Home (main feed)
-   - Apps (only apps category)
-   - Games (only games category)
-   - Category (all categories browse)
-   - Profile (user's own area - upload, ads, settings sab yahan)
+### Already Implemented (No Changes Needed)
+- ✅ Paid/Free app system (price_type, price columns)
+- ✅ Payment through admin API (Razorpay edge functions)
+- ✅ Screenshots upload & display
+- ✅ App detail page at `/app/{id}`
+- ✅ Commission system (30/70 split)
 
-### Phase 2: Developer Account System
-3. **Developer Registration** for game uploads:
-   - Phone number verification
-   - Aadhar card number
-   - PAN card number
-   - Photo upload
-   - Developer account status tracking
-   - Games tab sirf verified developers upload kar sakein
+### New Features to Build
 
-### Phase 3: Real Rating System
-4. **Manual User Ratings**:
-   - Users individually rate apps (1-5 stars)
-   - Average calculated from real ratings
-   - Remove fake default ratings
-   - Show review count
+#### 1. Share Button on App Detail Page
+- Add Web Share API button (WhatsApp, Telegram, copy link)
+- Top-right share icon on app detail page
 
-### Phase 4: Trust Score Details
-5. **Detailed App Info** instead of percentage:
-   - Show what features app has (permissions, payment, etc.)
-   - Show what it doesn't have
-   - Clear breakdown instead of just "60% safe"
+#### 2. App Demo Video Support
+- Add `video_url` column to `apps` table (YouTube link or uploaded video)
+- Add video URL input in Upload App form
+- Display video on app detail page below screenshots
 
-### Phase 5: Razorpay Payment Integration
-6. **Payment System**:
-   - Razorpay backend API integration
-   - Commission model (platform deducts commission)
-   - Developer wallet system
-   - Transaction verification on backend
-   - Block external payment systems in apps
+#### 3. Developer Name Display
+- Join `profiles.display_name` with `apps.uploaded_by` 
+- Show "by Developer Name" under app title on cards and detail page
 
-### Database Changes Needed:
-- `developer_accounts` table (phone, aadhar, pan, photo, status)
-- `app_ratings` table (user_id, app_id, rating, review_text)
-- `developer_wallets` table (balance, transactions)
-- `payment_transactions` table
-- Update `apps` table rating to be calculated from real ratings
-- Bottom nav doesn't need DB changes
+#### 4. Admin Ads & Banners System
+- Create `ad_banners` table (image_url, link, position, active, clicks)
+- Admin panel section to manage banners
+- Show banners on home page (carousel) and app detail page
 
-### Technical Notes:
-- Razorpay requires API keys (admin settings se connect)
-- Developer verification admin approval required
-- Phase 1-3 can be done without external APIs
-- Phase 5 needs Razorpay keys from admin
+#### 5. UI Polish
+- Cleaner app cards with developer name
+- Professional layout improvements
+
+### Database Migration
+- Add `video_url` to `apps` table
+- Create `ad_banners` table with RLS
