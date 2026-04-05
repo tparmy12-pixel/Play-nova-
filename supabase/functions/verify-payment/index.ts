@@ -20,6 +20,7 @@ Deno.serve(async (req) => {
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
+      console.error("[verify-payment] No auth header");
       return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: corsHeaders });
     }
 
@@ -29,13 +30,15 @@ Deno.serve(async (req) => {
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    const { data: claims, error: authError } = await supabase.auth.getClaims(authHeader.replace("Bearer ", ""));
-    if (authError || !claims?.claims) {
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      console.error("[verify-payment] Auth failed:", authError?.message);
       return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: corsHeaders });
     }
 
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = await req.json();
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      console.error("[verify-payment] Missing payment details");
       return new Response(JSON.stringify({ error: "Missing payment details" }), { status: 400, headers: corsHeaders });
     }
 
@@ -44,31 +47,64 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
+    // Duplicate check - if already completed, return success
+    const { data: existingTxn } = await adminClient.from("payment_transactions")
+      .select("id, status")
+      .eq("razorpay_order_id", razorpay_order_id)
+      .single();
+
+    if (existingTxn?.status === "completed") {
+      console.log("[verify-payment] Already completed:", razorpay_order_id);
+      return new Response(JSON.stringify({ verified: true, status: "already_completed" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (!existingTxn) {
+      console.error("[verify-payment] No transaction found for order:", razorpay_order_id);
+      return new Response(JSON.stringify({ error: "Transaction not found" }), { status: 404, headers: corsHeaders });
+    }
+
+    // Get Razorpay secret
     const { data: settings } = await adminClient.from("admin_settings").select("key, value").eq("key", "razorpay_key_secret");
     const keySecret = settings?.[0]?.value;
     if (!keySecret) {
+      console.error("[verify-payment] Razorpay secret not configured");
       return new Response(JSON.stringify({ error: "Payment not configured" }), { status: 500, headers: corsHeaders });
     }
 
+    // Verify signature
     const body = `${razorpay_order_id}|${razorpay_payment_id}`;
     const expectedSig = await hmacSha256Hex(keySecret, body);
 
     if (expectedSig !== razorpay_signature) {
+      console.error("[verify-payment] Signature mismatch for order:", razorpay_order_id);
+      await adminClient.from("payment_transactions").update({
+        status: "failed",
+        razorpay_payment_id,
+      }).eq("id", existingTxn.id);
       return new Response(JSON.stringify({ error: "Invalid signature", verified: false }), { status: 400, headers: corsHeaders });
     }
 
-    // Update transaction
-    await adminClient.from("payment_transactions").update({
+    // Update transaction to completed
+    const { error: updateErr } = await adminClient.from("payment_transactions").update({
       razorpay_payment_id,
       status: "completed",
-    }).eq("razorpay_order_id", razorpay_order_id);
+    }).eq("id", existingTxn.id);
 
-    // Get transaction to credit wallet
-    const { data: txn } = await adminClient.from("payment_transactions")
-      .select("id").eq("razorpay_order_id", razorpay_order_id).single();
+    if (updateErr) {
+      console.error("[verify-payment] Failed to update transaction:", updateErr.message);
+      return new Response(JSON.stringify({ error: "Failed to update transaction" }), { status: 500, headers: corsHeaders });
+    }
 
-    if (txn) {
-      await adminClient.rpc("credit_developer_wallet", { _transaction_id: txn.id });
+    console.log("[verify-payment] Payment verified, crediting wallet for txn:", existingTxn.id);
+
+    // Credit developer wallet (70% share)
+    const { error: creditErr } = await adminClient.rpc("credit_developer_wallet", { _transaction_id: existingTxn.id });
+    if (creditErr) {
+      console.error("[verify-payment] Wallet credit failed:", creditErr.message);
+    } else {
+      console.log("[verify-payment] Wallet credited successfully for txn:", existingTxn.id);
     }
 
     return new Response(JSON.stringify({ verified: true, status: "completed" }), {
@@ -76,6 +112,7 @@ Deno.serve(async (req) => {
     });
 
   } catch (err) {
+    console.error("[verify-payment] Unexpected error:", err.message);
     return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders });
   }
 });
