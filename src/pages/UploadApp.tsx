@@ -31,6 +31,7 @@ const UploadApp: React.FC = () => {
   const [apkFile, setApkFile] = useState<File | null>(null);
   const [iconFile, setIconFile] = useState<File | null>(null);
   const [screenshotFiles, setScreenshotFiles] = useState<File[]>([]);
+  const [videoUrl, setVideoUrl] = useState("");
 
   // Check developer account for Games category
   const { data: devAccount } = useQuery({
