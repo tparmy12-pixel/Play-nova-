@@ -1,36 +1,43 @@
-## Play Store-like Features Upgrade
 
-### Already Implemented (No Changes Needed)
-- ✅ Paid/Free app system (price_type, price columns)
-- ✅ Payment through admin API (Razorpay edge functions)
-- ✅ Screenshots upload & display
-- ✅ App detail page at `/app/{id}`
-- ✅ Commission system (30/70 split)
+## Plan: Multiple Feature Updates
 
-### New Features to Build
+### 1. Remove Promotion Floating Button
+- Home page se bottom-right corner ka "Promote Your App" floating button hatao
 
-#### 1. Share Button on App Detail Page
-- Add Web Share API button (WhatsApp, Telegram, copy link)
-- Top-right share icon on app detail page
+### 2. Ad System Update
+- Video ad lagane ke liye ₹10 charge karo (admin API se payment)
+- Agar koi ad available nahi hai to message dikhao: "No ads found, please try again"
 
-#### 2. App Demo Video Support
-- Add `video_url` column to `apps` table (YouTube link or uploaded video)
-- Add video URL input in Upload App form
-- Display video on app detail page below screenshots
+### 3. Premium Subscription System (₹800 / 30 days)
+- Database mein `user_subscriptions` table banao
+- Premium users ko:
+  - Ads free mein lagane ka option
+  - Download karte waqt ad na dikhe
+  - Naye app launch hone par notification mile
+  - Username golden color mein dikhe
+  - Premium badge dikhe
 
-#### 3. Developer Name Display
-- Join `profiles.display_name` with `apps.uploaded_by` 
-- Show "by Developer Name" under app title on cards and detail page
+### 4. Developer Account Tiers (3 types)
+- **Beginner**: Sirf PAN card + Aadhar card + UPI ID
+- **Student**: School/College name + Identity card + Aadhar card
+- **Company**: Company details + GST/Registration + PAN + Aadhar + UPI ID
+- Developer registration form update karo with tier selection
+- Database mein `developer_accounts` table update karo (tier column add)
 
-#### 4. Admin Ads & Banners System
-- Create `ad_banners` table (image_url, link, position, active, clicks)
-- Admin panel section to manage banners
-- Show banners on home page (carousel) and app detail page
+### 5. Admin Developer Approval Section
+- Admin dashboard mein naya section: "Developer Approvals"
+- Submitted developer accounts dikhaao with documents
+- Approve / Reject buttons with reason
+- Filter by tier type (Beginner/Student/Company)
 
-#### 5. UI Polish
-- Cleaner app cards with developer name
-- Professional layout improvements
+### Database Changes
+- `developer_accounts` table mein `tier` column add karo
+- `user_subscriptions` naya table banao
+- Developer account fields update karo (school_name, company_name, gst_number etc.)
 
-### Database Migration
-- Add `video_url` to `apps` table
-- Create `ad_banners` table with RLS
+### Files to modify
+- `src/pages/Index.tsx` - Remove floating promo button
+- `src/pages/DeveloperRegister.tsx` - Add tier system
+- `src/pages/admin/AdminDashboard.tsx` - Add developer approval link
+- New: `src/pages/admin/DeveloperApprovals.tsx`
+- New: Premium subscription page
