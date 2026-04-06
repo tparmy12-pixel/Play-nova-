@@ -72,6 +72,11 @@ const AdminDashboard: React.FC = () => {
                 <Image className="h-4 w-4 mr-2" /> Ads & Banners
               </Button>
             </Link>
+            <Link to="/admin/developers">
+              <Button variant="outline" className="border-emerald-500 text-emerald-500 hover:bg-emerald-500/10">
+                <UserCheck className="h-4 w-4 mr-2" /> Developer Approvals
+              </Button>
+            </Link>
             <Link to="/admin/apps/new">
               <Button className="gradient-neon text-primary-foreground neon-glow">
                 <Plus className="h-4 w-4 mr-2" /> Upload App
