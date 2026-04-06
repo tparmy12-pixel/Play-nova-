@@ -6,7 +6,6 @@ import Layout from "@/components/Layout";
 import AppCard from "@/components/AppCard";
 import AdBanner from "@/components/AdBanner";
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
 
 const Index: React.FC = () => {
   const [search, setSearch] = useState("");
