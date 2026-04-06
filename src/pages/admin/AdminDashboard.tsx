@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, Users, Package, Plus, BarChart3, Sparkles, ClipboardCheck, Key, Wallet, Image } from "lucide-react";
+import { Download, Users, Package, Plus, BarChart3, Sparkles, ClipboardCheck, Key, Wallet, Image, UserCheck } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 const AdminDashboard: React.FC = () => {
