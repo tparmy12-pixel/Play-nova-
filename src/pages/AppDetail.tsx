@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import Layout from "@/components/Layout";
 import VideoAd from "@/components/VideoAd";
-import ShareButton from "@/components/ShareButton";
+
 import AdBanner from "@/components/AdBanner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -275,14 +275,11 @@ const AppDetail: React.FC = () => {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <h1 className="font-display text-xl font-black text-foreground truncate">{app.name}</h1>
-                {developerProfile?.display_name && (
-                  <p className="text-xs text-primary">by {developerProfile.display_name}</p>
-                )}
-              </div>
-              <ShareButton appName={app.name} appId={app.id} />
+            <div className="min-w-0">
+              <h1 className="font-display text-xl font-black text-foreground truncate">{app.name}</h1>
+              {developerProfile?.display_name && (
+                <p className="text-xs text-primary">by {developerProfile.display_name}</p>
+              )}
             </div>
             <div className="flex flex-wrap gap-3 mt-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1"><Star className="h-3 w-3 fill-neon-pink text-neon-pink" />{avgRating ? avgRating.toFixed(1) : "N/A"} ({ratings.length})</span>

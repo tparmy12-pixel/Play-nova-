@@ -29,7 +29,7 @@ const UploadApp: React.FC = () => {
   const [priceType, setPriceType] = useState("free");
   const [price, setPrice] = useState("");
   const [apkFile, setApkFile] = useState<File | null>(null);
-  const [iconFile, setIconFile] = useState<File | null>(null);
+  
   const [screenshotFiles, setScreenshotFiles] = useState<File[]>([]);
   const [videoUrl, setVideoUrl] = useState("");
 
@@ -76,7 +76,7 @@ const UploadApp: React.FC = () => {
       let screenshots: string[] = [];
 
       if (apkFile) apkUrl = await uploadFile(apkFile, "apks", `${appId}/${apkFile.name}`);
-      if (iconFile) iconUrl = await uploadFile(iconFile, "app-assets", `icons/${appId}.png`);
+      
       if (screenshotFiles.length > 0) {
         screenshots = await Promise.all(
           screenshotFiles.map((f, i) => uploadFile(f, "app-assets", `screenshots/${appId}/${i}-${f.name}`))
@@ -210,10 +210,6 @@ const UploadApp: React.FC = () => {
                   <p className="text-[10px] text-muted-foreground">30% platform commission katega, 70% aapko milega</p>
                 </div>
               )}
-              <div className="space-y-1.5">
-                <Label className="text-xs">App Icon</Label>
-                <Input type="file" accept="image/*" onChange={(e) => setIconFile(e.target.files?.[0] || null)} />
-              </div>
               <div className="space-y-1.5">
                 <Label className="text-xs">APK File (max 200MB)</Label>
                 <Input type="file" accept=".apk" onChange={(e) => setApkFile(e.target.files?.[0] || null)} />
