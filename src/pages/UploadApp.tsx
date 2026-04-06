@@ -29,7 +29,7 @@ const UploadApp: React.FC = () => {
   const [priceType, setPriceType] = useState("free");
   const [price, setPrice] = useState("");
   const [apkFile, setApkFile] = useState<File | null>(null);
-  const [iconFile, setIconFile] = useState<File | null>(null);
+  
   const [screenshotFiles, setScreenshotFiles] = useState<File[]>([]);
   const [videoUrl, setVideoUrl] = useState("");
 
