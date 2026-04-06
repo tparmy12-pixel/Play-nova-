@@ -6,7 +6,6 @@ import Layout from "@/components/Layout";
 import AppCard from "@/components/AppCard";
 import AdBanner from "@/components/AdBanner";
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
 
 const Index: React.FC = () => {
   const [search, setSearch] = useState("");
@@ -39,14 +38,6 @@ const Index: React.FC = () => {
 
   return (
     <Layout showSearch onSearch={setSearch}>
-      {/* Promote FAB */}
-      <button
-        onClick={() => navigate("/promote")}
-        className="fixed bottom-20 right-4 z-[60] flex items-center gap-2 px-4 py-2.5 rounded-full gradient-neon text-primary-foreground text-xs font-bold neon-glow shadow-2xl hover:scale-110 transition-transform"
-      >
-        <Sparkles className="h-4 w-4" />
-        Promote
-      </button>
 
       {/* Hero */}
       <section className="relative overflow-hidden">

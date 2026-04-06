@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, Users, Package, Plus, BarChart3, Sparkles, ClipboardCheck, Key, Wallet, Image } from "lucide-react";
+import { Download, Users, Package, Plus, BarChart3, Sparkles, ClipboardCheck, Key, Wallet, Image, UserCheck } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 const AdminDashboard: React.FC = () => {
@@ -70,6 +70,11 @@ const AdminDashboard: React.FC = () => {
             <Link to="/admin/banners">
               <Button variant="outline" className="border-cyan-500 text-cyan-500 hover:bg-cyan-500/10">
                 <Image className="h-4 w-4 mr-2" /> Ads & Banners
+              </Button>
+            </Link>
+            <Link to="/admin/developers">
+              <Button variant="outline" className="border-emerald-500 text-emerald-500 hover:bg-emerald-500/10">
+                <UserCheck className="h-4 w-4 mr-2" /> Developer Approvals
               </Button>
             </Link>
             <Link to="/admin/apps/new">
