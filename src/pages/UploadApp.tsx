@@ -211,10 +211,6 @@ const UploadApp: React.FC = () => {
                 </div>
               )}
               <div className="space-y-1.5">
-                <Label className="text-xs">App Icon</Label>
-                <Input type="file" accept="image/*" onChange={(e) => setIconFile(e.target.files?.[0] || null)} />
-              </div>
-              <div className="space-y-1.5">
                 <Label className="text-xs">APK File (max 200MB)</Label>
                 <Input type="file" accept=".apk" onChange={(e) => setApkFile(e.target.files?.[0] || null)} />
                 {apkFile && <p className="text-[10px] text-muted-foreground">{apkFile.name} ({(apkFile.size / (1024*1024)).toFixed(1)} MB)</p>}
