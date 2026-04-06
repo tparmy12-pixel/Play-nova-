@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Upload, AlertTriangle, Shield, Code } from "lucide-react";
+import { Upload, AlertTriangle, Shield, Code, ImagePlus } from "lucide-react";
 
 const CATEGORIES = ["Social", "Games", "Tools", "Entertainment", "Education", "Other"];
 
@@ -29,7 +29,9 @@ const UploadApp: React.FC = () => {
   const [priceType, setPriceType] = useState("free");
   const [price, setPrice] = useState("");
   const [apkFile, setApkFile] = useState<File | null>(null);
-  
+  const [iconFile, setIconFile] = useState<File | null>(null);
+  const [iconPreview, setIconPreview] = useState<string | null>(null);
+  const iconInputRef = useRef<HTMLInputElement>(null);
   const [screenshotFiles, setScreenshotFiles] = useState<File[]>([]);
   const [videoUrl, setVideoUrl] = useState("");
 
@@ -76,6 +78,7 @@ const UploadApp: React.FC = () => {
       let screenshots: string[] = [];
 
       if (apkFile) apkUrl = await uploadFile(apkFile, "apks", `${appId}/${apkFile.name}`);
+      if (iconFile) iconUrl = await uploadFile(iconFile, "app-assets", `icons/${appId}.png`);
       
       if (screenshotFiles.length > 0) {
         screenshots = await Promise.all(
@@ -210,6 +213,44 @@ const UploadApp: React.FC = () => {
                   <p className="text-[10px] text-muted-foreground">30% platform commission katega, 70% aapko milega</p>
                 </div>
               )}
+              {/* Inline Icon Picker */}
+              <div className="space-y-1.5">
+                <Label className="text-xs">App Icon *</Label>
+                <div className="flex items-center gap-3">
+                  <div
+                    onClick={() => iconInputRef.current?.click()}
+                    className="w-16 h-16 rounded-2xl border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary/50 transition-colors overflow-hidden bg-muted/50 shrink-0"
+                  >
+                    {iconPreview ? (
+                      <img src={iconPreview} alt="App Icon" className="w-full h-full object-cover rounded-2xl" />
+                    ) : (
+                      <ImagePlus className="h-6 w-6 text-muted-foreground" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[10px] text-muted-foreground">
+                      {iconFile ? iconFile.name : "Icon select karne ke liye box pe tap karein"}
+                    </p>
+                  </div>
+                  <input
+                    ref={iconInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      setIconFile(file);
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => setIconPreview(ev.target?.result as string);
+                        reader.readAsDataURL(file);
+                      } else {
+                        setIconPreview(null);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
               <div className="space-y-1.5">
                 <Label className="text-xs">APK File (max 200MB)</Label>
                 <Input type="file" accept=".apk" onChange={(e) => setApkFile(e.target.files?.[0] || null)} />
