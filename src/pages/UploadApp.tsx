@@ -213,6 +213,44 @@ const UploadApp: React.FC = () => {
                   <p className="text-[10px] text-muted-foreground">30% platform commission katega, 70% aapko milega</p>
                 </div>
               )}
+              {/* Inline Icon Picker */}
+              <div className="space-y-1.5">
+                <Label className="text-xs">App Icon *</Label>
+                <div className="flex items-center gap-3">
+                  <div
+                    onClick={() => iconInputRef.current?.click()}
+                    className="w-16 h-16 rounded-2xl border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary/50 transition-colors overflow-hidden bg-muted/50 shrink-0"
+                  >
+                    {iconPreview ? (
+                      <img src={iconPreview} alt="App Icon" className="w-full h-full object-cover rounded-2xl" />
+                    ) : (
+                      <ImagePlus className="h-6 w-6 text-muted-foreground" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[10px] text-muted-foreground">
+                      {iconFile ? iconFile.name : "Icon select karne ke liye box pe tap karein"}
+                    </p>
+                  </div>
+                  <input
+                    ref={iconInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      setIconFile(file);
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => setIconPreview(ev.target?.result as string);
+                        reader.readAsDataURL(file);
+                      } else {
+                        setIconPreview(null);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
               <div className="space-y-1.5">
                 <Label className="text-xs">APK File (max 200MB)</Label>
                 <Input type="file" accept=".apk" onChange={(e) => setApkFile(e.target.files?.[0] || null)} />
