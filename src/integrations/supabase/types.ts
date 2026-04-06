@@ -225,38 +225,56 @@ export type Database = {
       developer_accounts: {
         Row: {
           aadhar_number: string
+          company_name: string | null
           created_at: string
+          gst_number: string | null
           id: string
+          identity_card_url: string | null
           pan_number: string
           phone_number: string
           rejected_reason: string | null
+          school_name: string | null
           selfie_url: string | null
           status: string
+          tier: string
           updated_at: string
+          upi_id: string | null
           user_id: string
         }
         Insert: {
           aadhar_number: string
+          company_name?: string | null
           created_at?: string
+          gst_number?: string | null
           id?: string
+          identity_card_url?: string | null
           pan_number: string
           phone_number: string
           rejected_reason?: string | null
+          school_name?: string | null
           selfie_url?: string | null
           status?: string
+          tier?: string
           updated_at?: string
+          upi_id?: string | null
           user_id: string
         }
         Update: {
           aadhar_number?: string
+          company_name?: string | null
           created_at?: string
+          gst_number?: string | null
           id?: string
+          identity_card_url?: string | null
           pan_number?: string
           phone_number?: string
           rejected_reason?: string | null
+          school_name?: string | null
           selfie_url?: string | null
           status?: string
+          tier?: string
           updated_at?: string
+          upi_id?: string | null
           user_id?: string
         }
         Relationships: []
@@ -489,6 +507,42 @@ export type Database = {
         Update: {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_subscriptions: {
+        Row: {
+          amount: number
+          created_at: string
+          expires_at: string
+          id: string
+          plan_type: string
+          starts_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          expires_at: string
+          id?: string
+          plan_type?: string
+          starts_at?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          plan_type?: string
+          starts_at?: string
+          status?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
