@@ -33,6 +33,7 @@ import DeveloperWallet from "./pages/DeveloperWallet";
 import SDKDocs from "./pages/SDKDocs";
 import AdminWithdrawals from "./pages/admin/AdminWithdrawals";
 import ManageBanners from "./pages/admin/ManageBanners";
+import DeveloperApprovals from "./pages/admin/DeveloperApprovals";
 
 const queryClient = new QueryClient();
 
