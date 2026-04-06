@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import Layout from "@/components/Layout";
 import VideoAd from "@/components/VideoAd";
-import ShareButton from "@/components/ShareButton";
+
 import AdBanner from "@/components/AdBanner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
