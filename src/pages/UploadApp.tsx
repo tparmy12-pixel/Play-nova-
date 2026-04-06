@@ -76,7 +76,7 @@ const UploadApp: React.FC = () => {
       let screenshots: string[] = [];
 
       if (apkFile) apkUrl = await uploadFile(apkFile, "apks", `${appId}/${apkFile.name}`);
-      if (iconFile) iconUrl = await uploadFile(iconFile, "app-assets", `icons/${appId}.png`);
+      
       if (screenshotFiles.length > 0) {
         screenshots = await Promise.all(
           screenshotFiles.map((f, i) => uploadFile(f, "app-assets", `screenshots/${appId}/${i}-${f.name}`))
