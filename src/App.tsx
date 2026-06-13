@@ -12,28 +12,17 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import AppDetail from "./pages/AppDetail";
 import Profile from "./pages/Profile";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AppForm from "./pages/admin/AppForm";
 import NotFound from "./pages/NotFound";
 import ContactUs from "./pages/ContactUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import Feedback from "./pages/Feedback";
 import PromoteApp from "./pages/PromoteApp";
-import PromotionRequests from "./pages/admin/PromotionRequests";
 import UploadApp from "./pages/UploadApp";
 import MyApps from "./pages/MyApps";
-import AppReviews from "./pages/admin/AppReviews";
-import ApiSettings from "./pages/admin/ApiSettings";
 import AppsPage from "./pages/AppsPage";
 import GamesPage from "./pages/GamesPage";
 import CategoriesPage from "./pages/CategoriesPage";
-import DeveloperRegister from "./pages/DeveloperRegister";
-import DeveloperWallet from "./pages/DeveloperWallet";
-import SDKDocs from "./pages/SDKDocs";
-import AdminWithdrawals from "./pages/admin/AdminWithdrawals";
-import ManageBanners from "./pages/admin/ManageBanners";
-import DeveloperApprovals from "./pages/admin/DeveloperApprovals";
 
 const queryClient = new QueryClient();
 
@@ -55,12 +44,6 @@ const App = () => (
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/app/:id" element={<AppDetail />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/admin" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/admin/apps/new" element={<ProtectedRoute adminOnly><AppForm /></ProtectedRoute>} />
-            <Route path="/admin/apps/:id/edit" element={<ProtectedRoute adminOnly><AppForm /></ProtectedRoute>} />
-            <Route path="/admin/reviews" element={<ProtectedRoute adminOnly><AppReviews /></ProtectedRoute>} />
-            <Route path="/admin/api-settings" element={<ProtectedRoute adminOnly><ApiSettings /></ProtectedRoute>} />
-            <Route path="/admin/promotions" element={<ProtectedRoute adminOnly><PromotionRequests /></ProtectedRoute>} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsConditions />} />
@@ -68,12 +51,6 @@ const App = () => (
             <Route path="/promote" element={<PromoteApp />} />
             <Route path="/upload" element={<ProtectedRoute><UploadApp /></ProtectedRoute>} />
             <Route path="/my-apps" element={<ProtectedRoute><MyApps /></ProtectedRoute>} />
-            <Route path="/developer" element={<ProtectedRoute><DeveloperRegister /></ProtectedRoute>} />
-            <Route path="/wallet" element={<ProtectedRoute><DeveloperWallet /></ProtectedRoute>} />
-            <Route path="/sdk-docs" element={<SDKDocs />} />
-            <Route path="/admin/withdrawals" element={<ProtectedRoute adminOnly><AdminWithdrawals /></ProtectedRoute>} />
-            <Route path="/admin/banners" element={<ProtectedRoute adminOnly><ManageBanners /></ProtectedRoute>} />
-            <Route path="/admin/developers" element={<ProtectedRoute adminOnly><DeveloperApprovals /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

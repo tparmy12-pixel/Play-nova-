@@ -44,7 +44,7 @@ const Index: React.FC = () => {
         <div className="absolute inset-0 gradient-neon opacity-10" />
         <div className="relative container mx-auto px-4 py-10 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="font-display text-3xl font-black gradient-neon-text mb-2">bs Store</h1>
+            <h1 className="font-display text-3xl font-black text-primary mb-2">Shortsal</h1>
             <p className="text-muted-foreground text-sm">Discover amazing apps & games</p>
           </motion.div>
         </div>
