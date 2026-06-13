@@ -7,10 +7,10 @@ import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, Mail, User, Upload, Sparkles, Shield, AppWindow, Gamepad2, Wallet, Code } from "lucide-react";
+import { Download, Mail, User, Upload, Sparkles, AppWindow } from "lucide-react";
 
 const Profile: React.FC = () => {
-  const { user, profile, isAdmin } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
 
   const { data: downloads = [] } = useQuery({
@@ -28,26 +28,10 @@ const Profile: React.FC = () => {
     enabled: !!user,
   });
 
-  const { data: devAccount } = useQuery({
-    queryKey: ["developer-account", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("developer_accounts")
-        .select("*")
-        .eq("user_id", user!.id)
-        .maybeSingle();
-      return data;
-    },
-    enabled: !!user,
-  });
-
   const menuItems = [
     { label: "Upload App", icon: Upload, path: "/upload", description: "Apna app ya game upload karein" },
     { label: "My Apps", icon: AppWindow, path: "/my-apps", description: "Aapke uploaded apps manage karein" },
     { label: "Promote App", icon: Sparkles, path: "/promote", description: "Apne app ki ad lagayein" },
-    { label: "Developer Account", icon: Gamepad2, path: "/developer", description: "Game upload ke liye developer verification" },
-    { label: "My Wallet", icon: Wallet, path: "/wallet", description: "Earnings, transactions aur withdrawal" },
-    { label: "Payment SDK", icon: Code, path: "/sdk-docs", description: "In-app purchase SDK documentation" },
   ];
 
   if (!user) {
@@ -55,7 +39,7 @@ const Profile: React.FC = () => {
       <Layout>
         <div className="container mx-auto px-4 py-12 text-center">
           <p className="text-muted-foreground mb-4">Profile dekhne ke liye login karein</p>
-          <Button onClick={() => navigate("/login")} className="gradient-neon text-primary-foreground">Login</Button>
+          <Button onClick={() => navigate("/login")} className="bg-primary text-primary-foreground">Login</Button>
         </div>
       </Layout>
     );
@@ -67,21 +51,12 @@ const Profile: React.FC = () => {
         {/* User Info */}
         <Card className="glass border-border/50 mb-4">
           <CardContent className="p-4 flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full gradient-neon flex items-center justify-center neon-glow">
+            <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center neon-glow">
               <User className="h-7 w-7 text-primary-foreground" />
             </div>
             <div className="flex-1">
               <p className="font-display font-bold text-foreground">{profile?.display_name || "User"}</p>
               <p className="text-xs text-muted-foreground">{user.email}</p>
-              {devAccount && (
-                <Badge className={`mt-1 text-[10px] ${
-                  (devAccount as any).status === 'approved' ? 'bg-green-500/20 text-green-400' :
-                  (devAccount as any).status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
-                  'bg-red-500/20 text-red-400'
-                }`}>
-                  Developer: {(devAccount as any).status}
-                </Badge>
-              )}
             </div>
           </CardContent>
         </Card>
@@ -106,22 +81,6 @@ const Profile: React.FC = () => {
             </Card>
           ))}
 
-          {isAdmin && (
-            <Card
-              className="glass border-border/50 cursor-pointer hover:border-neon-pink/50 transition-colors"
-              onClick={() => navigate("/admin")}
-            >
-              <CardContent className="p-3 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-neon-pink/10 flex items-center justify-center">
-                  <Shield className="h-5 w-5 text-neon-pink" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-sm">Admin Dashboard</p>
-                  <p className="text-xs text-muted-foreground">Apps manage, reviews, settings</p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </div>
 
         {/* Download History */}

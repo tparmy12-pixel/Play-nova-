@@ -175,7 +175,7 @@ const AppDetail: React.FC = () => {
         amount: orderData.amount,
         currency: orderData.currency,
         order_id: orderData.order_id,
-        name: "bs Store",
+        name: "Shortsal",
         description: `Purchase: ${app.name}`,
         handler: async (response: any) => {
           const verifyRes = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/verify-payment`, {
